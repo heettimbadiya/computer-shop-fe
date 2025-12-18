@@ -196,9 +196,10 @@ const Configurator = ({ parts }) => {
           {CATEGORIES.map((category, index) => (
             <div
               key={category}
-              className={`card animate-slide-up ${
-                index <= currentStep ? 'opacity-100' : 'opacity-50'
-              }`}
+              className={`card animate-slide-up opacity-100`}
+              // className={`card animate-slide-up ${
+              //   index <= currentStep ? 'opacity-100' : 'opacity-50'
+              // }`}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <PartSelector
