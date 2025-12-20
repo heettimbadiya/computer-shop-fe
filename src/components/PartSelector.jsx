@@ -156,14 +156,16 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
-              {parts.map((part) => (
+              {parts
+                  .filter(part => part._id !== selectedPartId)
+                  .map((part) => (
                 <button
                   key={part._id}
                   onClick={() => handleSelect(part._id)}
                   className={`group text-left p-5 rounded-2xl border-2 transition-all duration-300 ${
                     selectedPartId === part._id
                       ? 'border-primary-500 bg-gradient-to-br from-primary-50 to-accent-50/50 shadow-lg shadow-primary-500/10 scale-[1.02]'
-                      : 'border-gray-200 hover:border-primary-300 bg-white hover:shadow-md hover:scale-[1.01]'
+                      : 'border-gray-200 hover:border-primary-300 bg-white hover:shadow-md'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
