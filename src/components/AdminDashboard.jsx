@@ -1,39 +1,51 @@
 import { useState } from 'react'
 import PartsManagement from './admin/PartsManagement'
 import ConfigRequestsManagement from './admin/ConfigRequestsManagement'
+import { Settings, Package, FileText, LayoutDashboard } from 'lucide-react'
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('parts')
 
   const tabs = [
-    { id: 'parts', name: 'Parts Management', icon: '🔧' },
-    { id: 'requests', name: 'Configuration Requests', icon: '📋' },
+    { id: 'parts', name: 'Parts Management', icon: Package },
+    { id: 'requests', name: 'Configuration Requests', icon: FileText },
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8 animate-fade-in">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Admin Dashboard</h1>
-          <p className="text-gray-600">Manage parts and view configuration requests</p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        {/* Header */}
+        <div className="mb-10 animate-fade-in-up">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-600 to-accent-600 flex items-center justify-center shadow-xl shadow-primary-500/25">
+              <LayoutDashboard className="w-8 h-8 text-white" strokeWidth={2.5} />
+            </div>
+            <div>
+              <h1 className="section-title mb-1">Admin Dashboard</h1>
+              <p className="text-gray-600">Manage parts and view configuration requests</p>
+            </div>
+          </div>
         </div>
 
         {/* Tab Navigation */}
-        <div className="bg-white rounded-xl shadow-md mb-6 p-2 flex space-x-2 animate-slide-up">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 flex items-center justify-center space-x-2 py-3 px-6 rounded-lg font-semibold transition-all duration-300 ${
-                activeTab === tab.id
-                  ? 'bg-blue-600 text-white shadow-lg transform scale-105'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <span className="text-xl">{tab.icon}</span>
-              <span>{tab.name}</span>
-            </button>
-          ))}
+        <div className="card mb-8 p-2 flex gap-2 animate-slide-up">
+          {tabs.map((tab) => {
+            const Icon = tab.icon
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-xl font-semibold transition-all duration-300 ${
+                  activeTab === tab.id
+                    ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg shadow-primary-500/25 transform scale-[1.02]'
+                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                }`}
+              >
+                <Icon className={`w-5 h-5 ${activeTab === tab.id ? 'text-white' : 'text-gray-600'}`} strokeWidth={2.5} />
+                <span>{tab.name}</span>
+              </button>
+            )
+          })}
         </div>
 
         {/* Tab Content */}

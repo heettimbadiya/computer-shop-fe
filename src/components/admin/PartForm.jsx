@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { createPart, updatePart } from '../../services/api'
+import { X, Save, Loader2, Package } from 'lucide-react'
 
 const CATEGORIES = [
   'CPU',
@@ -141,17 +142,25 @@ const PartForm = ({ part, onClose, onSuccess }) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fade-in overflow-y-auto">
-      <div className="bg-white rounded-xl shadow-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-scale-in">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">
-            {part ? 'Edit Part' : 'Add New Part'}
-          </h2>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in overflow-y-auto">
+      <div className="card max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-scale-in shadow-2xl custom-scrollbar">
+        <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-200">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-600 to-accent-600 flex items-center justify-center">
+              <Package className="w-6 h-6 text-white" strokeWidth={2.5} />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">
+                {part ? 'Edit Part' : 'Add New Part'}
+              </h2>
+              <p className="text-sm text-gray-600">{part ? 'Update part information' : 'Create a new part'}</p>
+            </div>
+          </div>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-2xl"
+            className="w-10 h-10 rounded-xl hover:bg-gray-100 flex items-center justify-center transition-colors text-gray-500 hover:text-gray-700"
           >
-            ×
+            <X className="w-6 h-6" />
           </button>
         </div>
 
@@ -415,14 +424,15 @@ const PartForm = ({ part, onClose, onSuccess }) => {
             />
           </div>
 
-          <div className="flex space-x-3 pt-4 border-t">
+          <div className="flex gap-3 pt-6 border-t border-gray-200">
             <button
               type="button"
               onClick={onClose}
               className="flex-1 btn-secondary"
               disabled={submitting}
             >
-              Cancel
+              <X className="w-4 h-4" />
+              <span>Cancel</span>
             </button>
             <button
               type="submit"
@@ -430,12 +440,15 @@ const PartForm = ({ part, onClose, onSuccess }) => {
               disabled={submitting}
             >
               {submitting ? (
-                <span className="flex items-center justify-center">
-                  <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
-                  Saving...
-                </span>
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Saving...</span>
+                </>
               ) : (
-                part ? 'Update Part' : 'Create Part'
+                <>
+                  <Save className="w-4 h-4" />
+                  <span>{part ? 'Update Part' : 'Create Part'}</span>
+                </>
               )}
             </button>
           </div>
