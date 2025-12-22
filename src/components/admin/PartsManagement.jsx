@@ -1,7 +1,33 @@
 import { useState, useEffect } from 'react'
 import { getParts, createPart, updatePart, deletePart } from '../../services/api'
 import PartForm from './PartForm'
-import { Search, Filter, Plus, Edit, Trash2, Package, Loader2, AlertTriangle } from 'lucide-react'
+import { 
+  Search, 
+  Filter, 
+  Plus, 
+  Edit, 
+  Trash2, 
+  Package, 
+  Loader2, 
+  AlertTriangle,
+  Cpu,
+  CircuitBoard,
+  Database,
+  HardDrive,
+  Monitor,
+  Zap,
+  Box
+} from 'lucide-react'
+
+const categoryIcons = {
+  'CPU': Cpu,
+  'Motherboard': CircuitBoard,
+  'RAM': Database,
+  'Storage': HardDrive,
+  'GPU': Monitor,
+  'Power Supply': Zap,
+  'Cabinet': Box,
+}
 
 const CATEGORIES = [
   'CPU',
@@ -134,22 +160,52 @@ const PartsManagement = () => {
 
       {/* Parts Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredParts.map((part, index) => (
-          <div
-            key={part._id}
-            className="card-hover animate-slide-up"
-            style={{ animationDelay: `${index * 0.05}s` }}
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex-1">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  {part.name}
-                </h3>
-                <span className="badge-primary">
-                  {part.category}
-                </span>
+        {filteredParts.map((part, index) => {
+          const Icon = categoryIcons[part.category] || Package
+          return (
+            <div
+              key={part._id}
+              className="card-hover animate-slide-up"
+              style={{ animationDelay: `${index * 0.05}s` }}
+            >
+              {/* Image */}
+              <div className="relative w-full h-40 mb-4 rounded-xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+                {part.imageUrl ? (
+                  <img
+                    src={part.imageUrl}
+                    alt={part.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.style.display = 'none'
+                      e.target.nextSibling.style.display = 'flex'
+                    }}
+                  />
+                ) : null}
+                <div
+                  className={`absolute inset-0 flex items-center justify-center ${
+                    part.imageUrl ? 'hidden' : 'flex'
+                  }`}
+                >
+                  <Icon className="w-12 h-12 text-gray-400" strokeWidth={1.5} />
+                </div>
               </div>
-            </div>
+
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    {part.name}
+                  </h3>
+                  <span className="badge-primary">
+                    {part.category}
+                  </span>
+                </div>
+              </div>
+
+            {part.description && (
+              <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                {part.description}
+              </p>
+            )}
 
             <div className="space-y-3 mb-4">
               <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
@@ -216,7 +272,8 @@ const PartsManagement = () => {
               </button>
             </div>
           </div>
-        ))}
+          )
+        })}
       </div>
 
       {filteredParts.length === 0 && (

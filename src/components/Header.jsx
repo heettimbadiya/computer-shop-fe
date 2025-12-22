@@ -1,11 +1,24 @@
-import { Cpu, Settings, LayoutDashboard, ArrowLeft } from 'lucide-react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Cpu, Settings, LayoutDashboard, ArrowLeft, Package, Sparkles } from 'lucide-react'
 
 const Header = ({ isAdmin, onToggleAdmin }) => {
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const handleToggleAdmin = () => {
+    onToggleAdmin()
+    if (!isAdmin) {
+      navigate('/admin')
+    } else {
+      navigate('/configurator')
+    }
+  }
+
   return (
     <header className="sticky top-0 z-50 glass-effect border-b border-gray-200/50 backdrop-blur-xl">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <div className="flex items-center space-x-4 group cursor-pointer">
+          <Link to={isAdmin ? '/admin' : '/configurator'} className="flex items-center space-x-4 group cursor-pointer">
             <div className="relative">
               <div className="w-12 h-12 bg-gradient-to-br from-primary-600 to-accent-600 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-500/25 transform group-hover:scale-110 transition-transform duration-300">
                 <Cpu className="w-7 h-7 text-white" strokeWidth={2.5} />
@@ -20,9 +33,36 @@ const Header = ({ isAdmin, onToggleAdmin }) => {
                 {isAdmin ? 'Administration' : 'Custom Configuration'}
               </p>
             </div>
-          </div>
+          </Link>
           
           <div className="flex items-center gap-4">
+            {!isAdmin && (
+              <nav className="hidden md:flex items-center gap-2">
+                <Link
+                  to="/configurator"
+                  className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-300 flex items-center gap-2 ${
+                    location.pathname === '/configurator'
+                      ? 'bg-primary-100 text-primary-700'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>Configurator</span>
+                </Link>
+                <Link
+                  to="/items"
+                  className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-300 flex items-center gap-2 ${
+                    location.pathname.startsWith('/items')
+                      ? 'bg-primary-100 text-primary-700'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <Package className="w-4 h-4" />
+                  <span>Items</span>
+                </Link>
+              </nav>
+            )}
+            
             <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 border border-gray-200">
               {isAdmin ? (
                 <>
@@ -38,7 +78,7 @@ const Header = ({ isAdmin, onToggleAdmin }) => {
             </div>
             
             <button
-              onClick={onToggleAdmin}
+              onClick={handleToggleAdmin}
               className={`group relative overflow-hidden px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
                 isAdmin
                   ? 'bg-gray-100 hover:bg-gray-200 text-gray-700 border-2 border-gray-200'

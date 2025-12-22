@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { 
   Cpu, 
   CircuitBoard, 
@@ -11,7 +12,8 @@ import {
   X,
   ChevronDown,
   ChevronUp,
-  Package
+  Package,
+  ExternalLink
 } from 'lucide-react'
 
 const categoryIcons = {
@@ -73,7 +75,7 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
                 </span>
               </div>
               {selectedPart.compatibility && (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mb-3">
                   {selectedPart.compatibility.socket && (
                     <span className="badge-primary">
                       Socket: {selectedPart.compatibility.socket}
@@ -96,6 +98,13 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
                   )}
                 </div>
               )}
+              <Link
+                to={`/items/${selectedPart._id}`}
+                className="inline-flex items-center gap-1 text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors"
+              >
+                <span>View Details</span>
+                <ExternalLink className="w-3 h-3" />
+              </Link>
             </div>
             <button
               onClick={() => setIsExpanded(!isExpanded)}
@@ -159,16 +168,15 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
               {parts
                   .filter(part => part._id !== selectedPartId)
                   .map((part) => (
-                <button
+                <div
                   key={part._id}
-                  onClick={() => handleSelect(part._id)}
                   className={`group text-left p-5 rounded-2xl border-2 transition-all duration-300 ${
                     selectedPartId === part._id
                       ? 'border-primary-500 bg-gradient-to-br from-primary-50 to-accent-50/50 shadow-lg shadow-primary-500/10 scale-[1.02]'
                       : 'border-gray-200 hover:border-primary-300 bg-white hover:shadow-md'
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex-1 min-w-0">
                       <h4 className="font-bold text-gray-900 mb-2 group-hover:text-primary-700 transition-colors">
                         {part.name}
@@ -215,7 +223,22 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
                       <CheckCircle2 className="w-6 h-6 text-primary-600 shrink-0" />
                     )}
                   </div>
-                </button>
+                  <div className="flex gap-2 pt-3 border-t border-gray-100">
+                    <button
+                      onClick={() => handleSelect(part._id)}
+                      className="flex-1 btn-primary text-sm"
+                    >
+                      Select
+                    </button>
+                    <Link
+                      to={`/items/${part._id}`}
+                      className="btn-secondary text-sm flex items-center justify-center gap-1"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      <span>Details</span>
+                    </Link>
+                  </div>
+                </div>
               ))}
             </div>
           )}

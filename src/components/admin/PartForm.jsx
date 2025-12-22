@@ -29,6 +29,7 @@ const PartForm = ({ part, onClose, onSuccess }) => {
       powerConsumption: '',
       interface: '',
     },
+    imageUrl: '',
     description: '',
   })
   const [errors, setErrors] = useState({})
@@ -52,6 +53,7 @@ const PartForm = ({ part, onClose, onSuccess }) => {
           powerConsumption: part.compatibility?.powerConsumption || '',
           interface: part.compatibility?.interface || '',
         },
+        imageUrl: part.imageUrl || '',
         description: part.description || '',
       })
     }
@@ -412,15 +414,44 @@ const PartForm = ({ part, onClose, onSuccess }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
+              Image URL
+            </label>
+            <input
+              type="url"
+              name="imageUrl"
+              value={formData.imageUrl}
+              onChange={handleChange}
+              className="input-field"
+              placeholder="https://example.com/image.jpg"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Enter a URL to an image for this item
+            </p>
+            {formData.imageUrl && (
+              <div className="mt-3">
+                <img
+                  src={formData.imageUrl}
+                  alt="Preview"
+                  className="w-32 h-32 object-cover rounded-xl border-2 border-gray-200"
+                  onError={(e) => {
+                    e.target.style.display = 'none'
+                  }}
+                />
+              </div>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Description
             </label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              rows="3"
+              rows="4"
               className="input-field"
-              placeholder="Optional description..."
+              placeholder="Enter a detailed description of this item..."
             />
           </div>
 
