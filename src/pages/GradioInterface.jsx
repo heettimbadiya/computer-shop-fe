@@ -1,38 +1,22 @@
 import { useState, useEffect } from 'react'
 import { AlertCircle, Loader2, Smartphone, Monitor, ExternalLink, RefreshCw } from 'lucide-react'
 
-// Get Gradio URL - use backend URL + gradio port, or environment variable
+// Get Gradio URL - now uses Express proxy (works on Render!)
 const getGradioUrl = () => {
   const envUrl = import.meta.env.VITE_GRADIO_URL
   if (envUrl) return envUrl
   
-  // Try to get backend URL from API base URL
+  // Get backend URL from API base URL
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
   const backendUrl = apiBaseUrl.replace('/api', '').replace(/\/$/, '')
   
-  // Check if we're on Render
-  const isRender = backendUrl.includes('render.com')
-  const isLocalhost = backendUrl.includes('localhost') || backendUrl.includes('127.0.0.1')
-  
-  // For localhost, use localhost:7860
-  if (isLocalhost) {
-    return 'http://localhost:7860'
-  }
-  
-  // For Render, Gradio needs to be a separate service or disabled
-  // Render doesn't support custom ports in URLs
-  if (isRender) {
-    // Return null to indicate Gradio is not available
-    return null
-  }
-  
-  // For other production environments, try to construct URL
-  // But this likely won't work either
-  return `${backendUrl}:7860`
+  // Gradio is now accessible through Express proxy at /gradio
+  // This works on both localhost and Render!
+  return `${backendUrl}/gradio`
 }
 
 const GRADIO_SERVER_URL = getGradioUrl()
-const IS_RENDER = GRADIO_SERVER_URL === null
+const IS_RENDER = GRADIO_SERVER_URL.includes('render.com')
 
 const GradioInterface = () => {
   const [loading, setLoading] = useState(true)
@@ -75,58 +59,7 @@ const GradioInterface = () => {
     )
   }
 
-  // Show Render-specific message
-  if (IS_RENDER) {
-    return (
-      <div className="max-w-2xl mx-auto mt-8 animate-fade-in-up">
-        <div className="card border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100/50">
-          <div className="text-center">
-            <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
-              <AlertCircle className="w-8 h-8 text-blue-600" strokeWidth={2} />
-            </div>
-            <h3 className="text-xl font-bold text-blue-900 mb-2">Gradio Not Available on Render</h3>
-            <p className="text-blue-700 mb-4">
-              Render's free tier doesn't support multiple ports per service. Gradio requires a separate port (7860) which isn't available on Render.
-            </p>
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-left">
-              <p className="text-sm text-blue-800 font-semibold mb-2">Options:</p>
-              <ol className="text-sm text-blue-700 list-decimal list-inside space-y-2">
-                <li>
-                  <strong>Use locally:</strong> Run the backend locally to access Gradio
-                  <div className="ml-6 mt-1 text-xs">
-                    <code className="bg-blue-100 px-1 rounded">cd backend && npm start</code>
-                  </div>
-                </li>
-                <li>
-                  <strong>Separate Render service:</strong> Deploy Gradio as a separate Render service
-                  <div className="ml-6 mt-1 text-xs text-blue-600">
-                    Create a new Web Service for Gradio with its own URL
-                  </div>
-                </li>
-                <li>
-                  <strong>Use standard interface:</strong> The regular Configurator and Items pages work perfectly on Render
-                </li>
-              </ol>
-            </div>
-            <div className="flex gap-3 justify-center">
-              <a
-                href="/configurator"
-                className="btn-primary"
-              >
-                <span>Go to Configurator</span>
-              </a>
-              <a
-                href="/items"
-                className="btn-secondary"
-              >
-                <span>Browse Items</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  // Note: Removed Render-specific error message since Gradio now works on Render via proxy
 
   if (error) {
     return (
