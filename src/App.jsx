@@ -5,6 +5,7 @@ import Configurator from './components/Configurator'
 import AdminDashboard from './components/AdminDashboard'
 import ItemsListing from './pages/ItemsListing'
 import ItemDetail from './pages/ItemDetail'
+import GradioInterface from './pages/GradioInterface'
 import { getParts } from './services/api'
 import { Loader2, AlertCircle, RefreshCw } from 'lucide-react'
 
@@ -121,6 +122,11 @@ function App() {
             <Route path="/items/:id" element={
               <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
                 <ItemDetail />
+              </div>
+            } />
+            <Route path="/gradio" element={
+              <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+                <GradioInterface />
               </div>
             } />
             <Route path="/admin" element={<AdminDashboard />} />

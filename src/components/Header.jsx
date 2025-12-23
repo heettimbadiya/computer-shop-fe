@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Cpu, Settings, LayoutDashboard, ArrowLeft, Package, Sparkles } from 'lucide-react'
+import { Cpu, Settings, LayoutDashboard, ArrowLeft, Package, Sparkles, Smartphone } from 'lucide-react'
 
 const Header = ({ isAdmin, onToggleAdmin }) => {
   const location = useLocation()
@@ -59,6 +59,18 @@ const Header = ({ isAdmin, onToggleAdmin }) => {
                 >
                   <Package className="w-4 h-4" />
                   <span>Items</span>
+                </Link>
+                <Link
+                  to="/gradio"
+                  className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-300 flex items-center gap-2 relative ${
+                    location.pathname === '/gradio'
+                      ? 'bg-purple-100 text-purple-700'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <Smartphone className="w-4 h-4" />
+                  <span>Gradio</span>
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></span>
                 </Link>
               </nav>
             )}
