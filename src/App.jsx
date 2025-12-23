@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Header from './components/Header'
 import Configurator from './components/Configurator'
 import AdminDashboard from './components/AdminDashboard'
 import ItemsListing from './pages/ItemsListing'
 import ItemDetail from './pages/ItemDetail'
-import GradioInterface from './pages/GradioInterface'
 import { getParts } from './services/api'
 import { Loader2, AlertCircle, RefreshCw } from 'lucide-react'
 
@@ -106,11 +105,15 @@ function App() {
     )
   }
 
-  return (
-    <BrowserRouter>
+  // App Content Component - handles conditional header display
+  const AppContent = () => {
+    const location = useLocation()
+    const showHeader = !location.pathname.startsWith('/items/')
+
+    return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50">
-        <Header isAdmin={isAdmin} onToggleAdmin={handleToggleAdmin} />
-        <main className="pb-12">
+        {showHeader && <Header isAdmin={isAdmin} onToggleAdmin={handleToggleAdmin} />}
+        <main className={showHeader ? "pb-12" : ""}>
           <Routes>
             <Route path="/" element={<Navigate to="/configurator" replace />} />
             <Route path="/configurator" element={<ConfiguratorPage />} />
@@ -119,24 +122,20 @@ function App() {
                 <ItemsListing />
               </div>
             } />
-            <Route path="/items/:id" element={
-              <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-                <ItemDetail />
-              </div>
-            } />
-            <Route path="/gradio" element={
-              <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-                <GradioInterface />
-              </div>
-            } />
+            <Route path="/items/:id" element={<ItemDetail />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="*" element={<Navigate to="/configurator" replace />} />
           </Routes>
         </main>
       </div>
+    )
+  }
+
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   )
 }
 
 export default App
-
