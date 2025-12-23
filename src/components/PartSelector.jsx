@@ -229,7 +229,7 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
                       className="flex-1 btn-primary text-sm"
                     >
                       Select
-                    </button>
+                </button>
                     <Link
                       to={`/items/${part._id}`}
                       className="btn-secondary text-sm flex items-center justify-center gap-1"
