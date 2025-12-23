@@ -22,6 +22,7 @@ const GradioInterface = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+  const [iframeLoaded, setIframeLoaded] = useState(false)
 
   useEffect(() => {
     // Detect mobile device
@@ -30,16 +31,45 @@ const GradioInterface = () => {
     }
     window.addEventListener('resize', handleResize)
     
-    // Set loading to false after a short delay to allow iframe to load
-    const timer = setTimeout(() => {
-      setLoading(false)
-    }, 2000)
+    // Check if Gradio is accessible via health check endpoint
+    const checkGradioHealth = async () => {
+      try {
+        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
+        const healthUrl = `${apiBaseUrl.replace('/api', '')}/api/gradio/health`
+        
+        const response = await fetch(healthUrl)
+        const data = await response.json()
+        
+        if (data.status === 'running') {
+          console.log('✅ Gradio server is running')
+        } else if (data.status === 'disabled') {
+          setError('Gradio is disabled. Please enable it in the backend configuration.')
+          setLoading(false)
+        } else {
+          console.log('⚠️  Gradio status:', data.status, data.message)
+          // Don't set error here - let the iframe try to load
+        }
+      } catch (err) {
+        console.log('⚠️  Could not check Gradio health:', err)
+        // Don't set error here - let the iframe try to load
+      }
+    }
+    
+    checkGradioHealth()
+    
+    // Set a timeout to show error if iframe doesn't load
+    const errorTimer = setTimeout(() => {
+      if (!iframeLoaded && !error) {
+        setError('Gradio server is taking longer than expected to load. Please check if the backend server is running and Gradio is enabled.')
+        setLoading(false)
+      }
+    }, 15000) // 15 second timeout
     
     return () => {
       window.removeEventListener('resize', handleResize)
-      clearTimeout(timer)
+      clearTimeout(errorTimer)
     }
-  }, [])
+  }, [iframeLoaded, error])
 
   const handleRetry = () => {
     setError(null)
@@ -140,14 +170,23 @@ const GradioInterface = () => {
       )}
 
       {/* Gradio iframe */}
-      <div className="card p-0 overflow-hidden animate-fade-in">
+      <div className="card p-0 overflow-hidden animate-fade-in relative">
         <div 
-          className="w-full"
+          className="w-full relative"
           style={{
             height: isMobile ? 'calc(100vh - 300px)' : '800px',
             minHeight: '600px'
           }}
         >
+          {loading && !iframeLoaded && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+              <div className="text-center">
+                <Loader2 className="w-12 h-12 text-primary-600 animate-spin mx-auto mb-4" />
+                <p className="text-gray-700 font-medium">Loading Gradio interface...</p>
+                <p className="text-sm text-gray-500 mt-2">This may take a few seconds</p>
+              </div>
+            </div>
+          )}
           <iframe
             src={GRADIO_SERVER_URL}
             title="Gradio PC Builder Interface"
@@ -155,17 +194,26 @@ const GradioInterface = () => {
             style={{
               display: 'block',
               width: '100%',
-              height: '100%'
+              height: '100%',
+              opacity: iframeLoaded ? 1 : 0,
+              transition: 'opacity 0.3s ease-in-out'
             }}
-            allow="camera; microphone; geolocation"
-            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"
-            onLoad={() => {
+            allow="camera; microphone; geolocation; fullscreen"
+            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals allow-top-navigation"
+            onLoad={(e) => {
+              console.log('✅ Gradio iframe loaded successfully')
+              setIframeLoaded(true)
               setLoading(false)
               setError(null)
+              // Small delay to ensure content is rendered
+              setTimeout(() => {
+                setLoading(false)
+              }, 500)
             }}
-            onError={() => {
+            onError={(e) => {
+              console.error('❌ Gradio iframe error:', e)
               setLoading(false)
-              setError('Failed to load Gradio interface. The server may be starting up or unavailable.')
+              setError('Failed to load Gradio interface. Please check if the backend server is running and Gradio is enabled.')
             }}
           />
         </div>
