@@ -28,7 +28,13 @@ const categoryIcons = {
 
 const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) => {
   const [isExpanded, setIsExpanded] = useState(false)
-  const selectedPart = allParts.find(p => p._id === selectedPartId)
+  // Find selected part with proper ID comparison
+  const selectedPart = allParts?.find(p => {
+    if (!p || !p._id || !selectedPartId) return false
+    const partId = p._id.toString()
+    const selectedId = selectedPartId.toString()
+    return partId === selectedId
+  }) || null
   const Icon = categoryIcons[category] || Package
 
   const handleSelect = (partId) => {
@@ -180,12 +186,15 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
               {parts
-                  .filter(part => part._id !== selectedPartId)
+                  .filter(part => {
+                    if (!part || !part._id || !selectedPartId) return true
+                    return part._id.toString() !== selectedPartId.toString()
+                  })
                   .map((part) => (
                 <div
                   key={part._id}
                   className={`group text-left p-5 rounded-2xl border-2 transition-all duration-300 ${
-                    selectedPartId === part._id
+                    selectedPartId && part._id && selectedPartId.toString() === part._id.toString()
                       ? 'border-primary-500 bg-gradient-to-br from-primary-50 to-accent-50/50 shadow-lg shadow-primary-500/10 scale-[1.02]'
                       : 'border-gray-200 hover:border-primary-300 bg-white hover:shadow-md'
                   }`}
@@ -245,7 +254,7 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
                         </div>
                       )}
                     </div>
-                    {selectedPartId === part._id && (
+                    {selectedPartId && part._id && selectedPartId.toString() === part._id.toString() && (
                       <CheckCircle2 className="w-6 h-6 text-primary-600 shrink-0" />
                     )}
                   </div>

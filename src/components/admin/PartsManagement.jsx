@@ -39,7 +39,7 @@ const CATEGORIES = [
   'Cabinet',
 ]
 
-const PartsManagement = () => {
+const PartsManagement = ({ showToast = () => {} }) => {
   const [parts, setParts] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
@@ -82,9 +82,15 @@ const PartsManagement = () => {
       setDeleteConfirm(null)
       // Force refresh customer pages by triggering a storage event
       window.dispatchEvent(new Event('partsUpdated'))
+      if (showToast) {
+        showToast('Part deleted successfully!', 'success')
+      }
     } catch (error) {
       console.error('Error deleting part:', error)
-      alert('Failed to delete part')
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to delete part'
+      if (showToast) {
+        showToast(errorMessage, 'error', 5000)
+      }
     }
   }
 
@@ -93,11 +99,17 @@ const PartsManagement = () => {
     setEditingPart(null)
   }
 
-  const handleFormSuccess = () => {
+  const handleFormSuccess = (isEdit = false) => {
     loadParts()
     handleFormClose()
     // Force refresh customer pages by triggering a storage event
     window.dispatchEvent(new Event('partsUpdated'))
+    if (showToast) {
+      showToast(
+        isEdit ? 'Part updated successfully!' : 'Part created successfully!',
+        'success'
+      )
+    }
   }
 
   const filteredParts = parts.filter((part) => {
@@ -349,6 +361,7 @@ const PartsManagement = () => {
           part={editingPart}
           onClose={handleFormClose}
           onSuccess={handleFormSuccess}
+          showToast={showToast}
         />
       )}
     </div>

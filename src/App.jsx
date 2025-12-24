@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Header from './components/Header'
+import Footer from './components/Footer'
 import Configurator from './components/Configurator'
 import AdminDashboard from './components/AdminDashboard'
 import ItemsListing from './pages/ItemsListing'
@@ -131,9 +132,9 @@ function App() {
     const showHeader = location.pathname !== '/admin'
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50 flex flex-col">
         {showHeader && <Header isAdmin={isAdmin} onToggleAdmin={handleToggleAdmin} />}
-        <main className={showHeader ? "pb-12" : ""}>
+        <main className={`flex-1 ${showHeader ? "pb-12" : ""}`}>
           <Routes>
             <Route path="/" element={<Navigate to="/configurator" replace />} />
             <Route path="/configurator" element={<ConfiguratorPage />} />
@@ -147,6 +148,7 @@ function App() {
             <Route path="*" element={<Navigate to="/configurator" replace />} />
           </Routes>
         </main>
+        {showHeader && <Footer />}
       </div>
     )
   }

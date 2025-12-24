@@ -1,14 +1,18 @@
 import { useState } from 'react'
 import PartsManagement from './admin/PartsManagement'
 import ConfigRequestsManagement from './admin/ConfigRequestsManagement'
-import { Settings, Package, FileText, LayoutDashboard } from 'lucide-react'
+import ContactInfoManagement from './admin/ContactInfoManagement'
+import { ToastContainer, useToast } from './ToastContainer'
+import { Settings, Package, FileText, LayoutDashboard, Phone } from 'lucide-react'
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('parts')
+  const { showToast, removeToast, toasts } = useToast()
 
   const tabs = [
     { id: 'parts', name: 'Parts Management', icon: Package },
     { id: 'requests', name: 'Configuration Requests', icon: FileText },
+    { id: 'contact', name: 'Contact Information', icon: Phone },
   ]
 
   return (
@@ -50,10 +54,12 @@ const AdminDashboard = () => {
 
         {/* Tab Content */}
         <div className="animate-fade-in">
-          {activeTab === 'parts' && <PartsManagement />}
-          {activeTab === 'requests' && <ConfigRequestsManagement />}
+          {activeTab === 'parts' && <PartsManagement showToast={showToast} />}
+          {activeTab === 'requests' && <ConfigRequestsManagement showToast={showToast} />}
+          {activeTab === 'contact' && <ContactInfoManagement showToast={showToast} />}
         </div>
       </div>
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
     </div>
   )
 }

@@ -2,11 +2,11 @@ import { Receipt, ShoppingCart, CheckCircle2, AlertCircle } from 'lucide-react'
 
 const PriceSummary = ({ selectedParts, allParts, totalPrice }) => {
   const getPart = (partId) => {
-    if (!partId) return null
-    return allParts.find(p => p._id === partId)
+    if (!partId || !allParts) return null
+    return allParts.find(p => p && p._id && (p._id === partId || p._id.toString() === partId.toString()))
   }
 
-  const selectedPartsList = Object.entries(selectedParts)
+  const selectedPartsList = Object.entries(selectedParts || {})
     .map(([category, partId]) => ({
       category,
       part: getPart(partId),
@@ -41,19 +41,24 @@ const PriceSummary = ({ selectedParts, allParts, totalPrice }) => {
             {selectedPartsList.map(({ category, part }, index) => (
               <div
                 key={category}
-                className="flex items-start justify-between p-4 bg-white rounded-xl shadow-sm border border-gray-100 animate-fade-in-up hover:shadow-md transition-all duration-200"
+                className="flex items-start justify-between p-3 sm:p-4 bg-white rounded-xl shadow-sm border border-gray-100 animate-fade-in-up hover:shadow-md transition-all duration-200"
                 style={{ animationDelay: `${index * 0.05}s` }}
               >
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 pr-2">
                   <div className="flex items-center gap-2 mb-1">
                     <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                     <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{category}</p>
                   </div>
                   <p className="text-sm font-bold text-gray-900 truncate">{part.name}</p>
+                  {part.isSecondHand === true && (
+                    <span className="badge-warning text-xs font-semibold mt-1 inline-block">
+                      Second Hand
+                    </span>
+                  )}
                 </div>
-                <div className="text-right ml-3 shrink-0">
-                  <p className="text-base font-bold text-primary-600">
-                    ${part.price.toLocaleString()}
+                <div className="text-right shrink-0">
+                  <p className="text-sm sm:text-base font-bold text-primary-600">
+                    ${(part.price || 0).toLocaleString()}
                   </p>
                 </div>
               </div>

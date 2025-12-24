@@ -12,7 +12,7 @@ const CATEGORIES = [
   'Cabinet',
 ]
 
-const PartForm = ({ part, onClose, onSuccess }) => {
+const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
   const [formData, setFormData] = useState({
     name: '',
     category: 'CPU',
@@ -131,15 +131,24 @@ const PartForm = ({ part, onClose, onSuccess }) => {
 
       if (part) {
         await updatePart(part._id, partData)
+        onSuccess(true) // Pass true for edit
       } else {
         await createPart(partData)
+        onSuccess(false) // Pass false for create
       }
-      onSuccess()
     } catch (error) {
       console.error('Error saving part:', error)
-      alert(
-        error.response?.data?.message || 'Failed to save part. Please try again.'
-      )
+      const errorMessage = error.response?.data?.message || error.response?.data?.error || 'Failed to save part. Please try again.'
+      setErrors({ 
+        submit: errorMessage,
+        ...(error.response?.data?.errors || {})
+      })
+      // Show error toast if available
+      if (showToast) {
+        showToast(errorMessage, 'error', 5000)
+      } else {
+        alert(errorMessage)
+      }
     } finally {
       setSubmitting(false)
     }

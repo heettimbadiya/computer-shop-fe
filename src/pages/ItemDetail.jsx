@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { getPartById } from '../services/api'
+import { getPartById, getContactInfo } from '../services/api'
 import { 
   Cpu, 
   Monitor, 
@@ -46,27 +46,75 @@ const ItemDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isFavorited, setIsFavorited] = useState(false)
   const [showMoreSpecs, setShowMoreSpecs] = useState(false)
+  const [contactInfo, setContactInfo] = useState({
+    workerPhone: '+90 551 894 00 69',
+    instagramUrl: 'https://www.instagram.com/xpanbilgisayar',
+  })
 
   useEffect(() => {
     loadItem()
+    loadContactInfo()
   }, [id])
+
+  const loadContactInfo = async () => {
+    try {
+      const data = await getContactInfo()
+      if (data) {
+        setContactInfo({
+          workerPhone: data.workerPhone || '+90 551 894 00 69',
+          instagramUrl: data.instagramUrl || 'https://www.instagram.com/xpanbilgisayar',
+        })
+      }
+    } catch (error) {
+      console.error('Error loading contact info:', error)
+      // Keep default values on error
+    }
+  }
 
   const loadItem = async () => {
     try {
       setLoading(true)
       setError(null)
+      if (!id) {
+        setError('Invalid item ID')
+        return
+      }
       const data = await getPartById(id)
+      if (!data) {
+        setError('Item not found')
+        return
+      }
       setItem(data)
     } catch (err) {
       console.error('Error loading item:', err)
-      setError('Item not found')
+      const errorMessage = err.response?.data?.message || err.message || 'Item not found'
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
   }
 
   const handleAddToConfig = () => {
-    navigate('/configurator', { state: { selectedItem: item } })
+    if (!item || !item._id) {
+      alert('Item information is not available. Please try again.')
+      return
+    }
+    
+    if (item.stock === 0) {
+      alert('This item is out of stock and cannot be added to configuration.')
+      return
+    }
+    
+    // Navigate to configurator with the selected item
+    navigate('/configurator', { 
+      state: { 
+        selectedItem: {
+          _id: item._id,
+          category: item.category,
+          name: item.name
+        }
+      } 
+    })
   }
 
   const handleShare = () => {
@@ -83,7 +131,11 @@ const ItemDetail = () => {
   }
 
   const handleCall = () => {
-    alert('Contact functionality - This would initiate a call or show seller contact information')
+    if (contactInfo.workerPhone) {
+      window.location.href = `tel:${contactInfo.workerPhone.replace(/\s/g, '')}`
+    } else {
+      alert('Contact phone number is not available')
+    }
   }
 
   const formatPrice = (price) => {

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
 import PartSelector from './PartSelector'
 import PriceSummary from './PriceSummary'
 import SubmitForm from './SubmitForm'
@@ -16,15 +17,92 @@ const CATEGORIES = [
 ]
 
 const Configurator = ({ parts }) => {
+  const location = useLocation()
   const [selectedParts, setSelectedParts] = useState({})
   const [compatibleParts, setCompatibleParts] = useState({})
   const [currentStep, setCurrentStep] = useState(0)
   const [showSubmitForm, setShowSubmitForm] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState(null)
+  const processedItemRef = useRef(null)
+
+  // Handle item added from detail page
+  useEffect(() => {
+    const selectedItem = location.state?.selectedItem
+    if (!selectedItem || !parts || parts.length === 0) return
+    
+    const category = selectedItem.category
+    const selectedId = selectedItem._id?.toString()
+    const itemKey = `${category}-${selectedId}`
+    
+    // Skip if we've already processed this item
+    if (processedItemRef.current === itemKey) return
+    
+    // Only proceed if category is valid and ID exists
+    if (!CATEGORIES.includes(category) || !selectedId) {
+      window.history.replaceState({}, document.title)
+      return
+    }
+    
+    // Verify the part exists in our parts list
+    const partExists = parts.some(p => {
+      const partId = p._id?.toString()
+      return partId === selectedId
+    })
+    
+    if (!partExists) {
+      console.warn('Selected item not found in parts list:', selectedItem)
+      window.history.replaceState({}, document.title)
+      return
+    }
+    
+    // Wait for compatible parts to be available, then select
+    const checkAndSelect = () => {
+      // Mark as processed
+      processedItemRef.current = itemKey
+      
+      setSelectedParts((prev) => {
+        // Only update if not already set
+        if (prev[category]?.toString() !== selectedId) {
+          return {
+            ...prev,
+            [category]: selectedItem._id
+          }
+        }
+        return prev
+      })
+      
+      // Scroll to the relevant category section
+      setTimeout(() => {
+        const element = document.getElementById(`category-${category}`)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          // Add a highlight effect
+          element.classList.add('ring-4', 'ring-primary-500', 'ring-opacity-50', 'transition-all')
+          setTimeout(() => {
+            element.classList.remove('ring-4', 'ring-primary-500', 'ring-opacity-50')
+          }, 2000)
+        }
+      }, 500)
+      
+      // Clear the state to prevent re-adding on re-render
+      window.history.replaceState({}, document.title)
+    }
+    
+    // If compatible parts are already loaded, select immediately
+    // Otherwise wait a bit for them to load
+    if (Object.keys(compatibleParts).length > 0) {
+      checkAndSelect()
+    } else {
+      const timer = setTimeout(checkAndSelect, 1500)
+      return () => clearTimeout(timer)
+    }
+  }, [location.state, parts, compatibleParts])
 
   // Load compatible parts for each category
   useEffect(() => {
+    if (!parts || parts.length === 0) return
+    
     const loadCompatibleParts = async () => {
       const compatible = {}
       for (const category of CATEGORIES) {
@@ -41,37 +119,25 @@ const Configurator = ({ parts }) => {
     }
 
     loadCompatibleParts()
-  }, [selectedParts])
-
-  // Initial load when component mounts
-  useEffect(() => {
-    const loadCompatibleParts = async () => {
-      const compatible = {}
-      for (const category of CATEGORIES) {
-        try {
-          const compatibleList = await getCompatibleParts(category, {})
-          compatible[category] = compatibleList || []
-        } catch (error) {
-          console.error(`Error loading compatible parts for ${category}:`, error)
-          compatible[category] = []
-        }
-      }
-      setCompatibleParts(compatible)
-    }
-
-    loadCompatibleParts()
-  }, [])
+  }, [selectedParts, parts])
 
   const handlePartSelect = (category, partId) => {
+    if (!parts) return
     setSelectedParts((prev) => {
       const newSelected = { ...prev, [category]: partId || null }
+      
+      // Helper function to find part safely
+      const findPart = (id) => {
+        if (!id || !parts) return null
+        return parts.find(p => p && p._id && (p._id === id || p._id.toString() === id.toString()))
+      }
       
       // Reset dependent selections when a parent part changes
       if (category === 'CPU') {
         // Reset motherboard and RAM if CPU changes
         if (newSelected.Motherboard) {
-          const mb = parts.find(p => p._id === newSelected.Motherboard)
-          const cpu = parts.find(p => p._id === partId)
+          const mb = findPart(newSelected.Motherboard)
+          const cpu = findPart(partId)
           if (mb && cpu && mb.compatibility?.supportedSocket !== cpu.compatibility?.socket) {
             newSelected.Motherboard = null
             newSelected.RAM = null
@@ -80,16 +146,16 @@ const Configurator = ({ parts }) => {
       } else if (category === 'Motherboard') {
         // Reset RAM if motherboard changes
         if (newSelected.RAM) {
-          const ram = parts.find(p => p._id === newSelected.RAM)
-          const mb = parts.find(p => p._id === partId)
+          const ram = findPart(newSelected.RAM)
+          const mb = findPart(partId)
           if (ram && mb && ram.compatibility?.ddrVersion !== mb.compatibility?.supportedRamType) {
             newSelected.RAM = null
           }
         }
         // Reset cabinet if motherboard form factor doesn't match
         if (newSelected.Cabinet) {
-          const cabinet = parts.find(p => p._id === newSelected.Cabinet)
-          const mb = parts.find(p => p._id === partId)
+          const cabinet = findPart(newSelected.Cabinet)
+          const mb = findPart(partId)
           if (cabinet && mb && mb.compatibility?.formFactor) {
             if (!cabinet.compatibility?.supportedFormFactors?.includes(mb.compatibility.formFactor)) {
               newSelected.Cabinet = null
@@ -99,11 +165,11 @@ const Configurator = ({ parts }) => {
       } else if (category === 'Power Supply') {
         // Reset GPU if power supply is insufficient
         if (newSelected.GPU) {
-          const gpu = parts.find(p => p._id === newSelected.GPU)
-          const psu = parts.find(p => p._id === partId)
+          const gpu = findPart(newSelected.GPU)
+          const psu = findPart(partId)
           if (gpu && psu) {
             let totalPower = 100
-            const cpu = parts.find(p => p._id === newSelected.CPU)
+            const cpu = findPart(newSelected.CPU)
             if (cpu?.compatibility?.powerConsumption) {
               totalPower += cpu.compatibility.powerConsumption
             }
@@ -118,11 +184,11 @@ const Configurator = ({ parts }) => {
       } else if (category === 'GPU') {
         // Reset power supply if GPU requires more power than current PSU
         if (newSelected['Power Supply']) {
-          const gpu = parts.find(p => p._id === partId)
-          const psu = parts.find(p => p._id === newSelected['Power Supply'])
+          const gpu = findPart(partId)
+          const psu = findPart(newSelected['Power Supply'])
           if (gpu && psu) {
             let totalPower = 100
-            const cpu = parts.find(p => p._id === newSelected.CPU)
+            const cpu = findPart(newSelected.CPU)
             if (cpu?.compatibility?.powerConsumption) {
               totalPower += cpu.compatibility.powerConsumption
             }
@@ -141,10 +207,11 @@ const Configurator = ({ parts }) => {
   }
 
   const calculateTotalPrice = () => {
+    if (!parts || !selectedParts) return 0
     return Object.values(selectedParts)
       .filter(Boolean)
       .reduce((total, partId) => {
-        const part = parts.find(p => p._id === partId)
+        const part = parts.find(p => p && p._id && (p._id === partId || p._id.toString() === partId.toString()))
         return total + (part?.price || 0)
       }, 0)
   }
@@ -166,6 +233,9 @@ const Configurator = ({ parts }) => {
       })
       setShowSubmitForm(false)
       
+      // Notify admin panel to refresh
+      window.dispatchEvent(new Event('configRequestSubmitted'))
+      
       // Reset form after 3 seconds
       setTimeout(() => {
         setSelectedParts({})
@@ -173,10 +243,14 @@ const Configurator = ({ parts }) => {
         setSubmitStatus(null)
       }, 3000)
     } catch (error) {
+      console.error('Error submitting config request:', error)
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to submit configuration request'
+      const errorDetails = error.response?.data?.details || ''
       setSubmitStatus({
         type: 'error',
-        message: error.response?.data?.message || 'Failed to submit configuration request',
+        message: errorDetails ? `${errorMessage}: ${errorDetails}` : errorMessage,
         errors: error.response?.data?.errors || [],
+        warnings: error.response?.data?.warnings || [],
       })
     } finally {
       setSubmitting(false)
@@ -251,13 +325,14 @@ const Configurator = ({ parts }) => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         {/* Configuration Panel */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4 lg:space-y-6">
           {CATEGORIES.map((category, index) => (
             <div
               key={category}
-              className="card animate-slide-up"
+              id={`category-${category}`}
+              className="card animate-slide-up transition-all duration-300"
               style={{ animationDelay: `${index * 0.08}s` }}
             >
               <PartSelector
@@ -311,7 +386,7 @@ const Configurator = ({ parts }) => {
 
         {/* Price Summary Sidebar */}
         <div className="lg:col-span-1">
-          <div className="sticky top-28">
+          <div className="sticky top-24 lg:top-28">
             <PriceSummary
               selectedParts={selectedParts}
               allParts={parts}
