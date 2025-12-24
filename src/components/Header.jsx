@@ -77,7 +77,7 @@ const Header = ({ isAdmin, onToggleAdmin }) => {
               )}
             </div>
             
-            <button
+            {isAdmin && <button
               onClick={handleToggleAdmin}
               className={`group relative overflow-hidden px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
                 isAdmin
@@ -85,18 +85,13 @@ const Header = ({ isAdmin, onToggleAdmin }) => {
                   : 'bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white shadow-lg shadow-primary-500/25'
               } transform hover:scale-105 active:scale-95 flex items-center gap-2`}
             >
-              {isAdmin ? (
+             
                 <>
                   <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
                   <span>Customer View</span>
                 </>
-              ) : (
-                <>
-                  <Settings className="w-4 h-4 transition-transform group-hover:rotate-90" />
-                  <span>Admin Panel</span>
-                </>
-              )}
-            </button>
+             
+            </button>}
           </div>
         </div>
       </div>

@@ -168,17 +168,28 @@ const ItemsListing = () => {
                   >
                     <Icon className="w-16 h-16 text-gray-400" strokeWidth={1.5} />
                   </div>
-                  <div className="absolute top-3 right-3">
+                  <div className="absolute top-3 right-3 flex flex-col gap-2 items-end">
                     <span className="badge-primary">{item.category}</span>
+                    {item.isSecondHand === true ? (
+                      <span className="badge-warning text-xs font-semibold">
+                        Second Hand
+                      </span>
+                    ) : (
+                      <span className="badge-success text-xs font-semibold">
+                        New
+                      </span>
+                    )}
                   </div>
                 </div>
 
                 {/* Content */}
                 <div className="space-y-3">
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-700 transition-colors line-clamp-2">
-                      {item.name}
-                    </h3>
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-primary-700 transition-colors line-clamp-2">
+                        {item.name}
+                      </h3>
+                    </div>
                     {item.description && (
                       <p className="text-sm text-gray-600 line-clamp-2">
                         {item.description}

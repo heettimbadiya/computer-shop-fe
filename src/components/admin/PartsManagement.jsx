@@ -55,7 +55,8 @@ const PartsManagement = () => {
   const loadParts = async () => {
     try {
       setLoading(true)
-      const data = await getParts()
+      // Admin can see all parts including second-hand ones
+      const data = await getParts(null, null, true)
       setParts(data)
     } catch (error) {
       console.error('Error loading parts:', error)
@@ -192,9 +193,20 @@ const PartsManagement = () => {
 
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    {part.name}
-                  </h3>
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {part.name}
+                    </h3>
+                    {part.isSecondHand === true ? (
+                      <span className="badge-warning text-xs font-semibold">
+                        Second Hand
+                      </span>
+                    ) : (
+                      <span className="badge-success text-xs font-semibold">
+                        New
+                      </span>
+                    )}
+                  </div>
                   <span className="badge-primary">
                     {part.category}
                   </span>

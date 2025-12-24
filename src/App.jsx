@@ -22,6 +22,9 @@ function App() {
     } else {
       setLoading(false)
     }
+    if(window.location.pathname === '/admin') {
+      setIsAdmin(true)
+    }
   }, [])
 
   const loadParts = async () => {

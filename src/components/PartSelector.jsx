@@ -68,6 +68,15 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircle2 className="w-5 h-5 text-primary-600" />
                 <h4 className="font-bold text-gray-900 text-lg">{selectedPart.name}</h4>
+                {selectedPart.isSecondHand === true ? (
+                  <span className="badge-warning text-xs font-semibold">
+                    Second Hand
+                  </span>
+                ) : (
+                  <span className="badge-success text-xs font-semibold">
+                    New
+                  </span>
+                )}
               </div>
               <div className="flex items-baseline gap-2 mb-3">
                 <span className="text-2xl font-bold text-primary-600">
@@ -178,9 +187,20 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
                 >
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-gray-900 mb-2 group-hover:text-primary-700 transition-colors">
-                        {part.name}
-                      </h4>
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
+                        <h4 className="font-bold text-gray-900 group-hover:text-primary-700 transition-colors">
+                          {part.name}
+                        </h4>
+                        {part.isSecondHand === true ? (
+                          <span className="badge-warning text-xs font-semibold">
+                            Second Hand
+                          </span>
+                        ) : (
+                          <span className="badge-success text-xs font-semibold">
+                            New
+                          </span>
+                        )}
+                      </div>
                       <div className="flex items-baseline gap-2 mb-3">
                         <span className="text-xl font-bold text-primary-600">
                           ${part.price.toLocaleString()}

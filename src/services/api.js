@@ -9,11 +9,12 @@ const api = axios.create({
   },
 })
 
-export const getParts = async (category = null, compatibleWith = null) => {
+export const getParts = async (category = null, compatibleWith = null, includeSecondHand = false) => {
   try {
     const params = {}
     if (category) params.category = category
     if (compatibleWith) params.compatibleWith = JSON.stringify(compatibleWith)
+    if (includeSecondHand) params.includeSecondHand = 'true'
     
     const response = await api.get('/parts', { params })
     return response.data.data || []

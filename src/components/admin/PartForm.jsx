@@ -18,6 +18,7 @@ const PartForm = ({ part, onClose, onSuccess }) => {
     category: 'CPU',
     price: 0,
     stock: 0,
+    isSecondHand: false,
     compatibility: {
       socket: '',
       supportedSocket: '',
@@ -42,6 +43,7 @@ const PartForm = ({ part, onClose, onSuccess }) => {
         category: part.category || 'CPU',
         price: part.price || 0,
         stock: part.stock || 0,
+        isSecondHand: part.isSecondHand || false,
         compatibility: {
           socket: part.compatibility?.socket || '',
           supportedSocket: part.compatibility?.supportedSocket || '',
@@ -239,6 +241,24 @@ const PartForm = ({ part, onClose, onSuccess }) => {
               {errors.stock && (
                 <p className="text-red-500 text-sm mt-1">{errors.stock}</p>
               )}
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="isSecondHand"
+                  checked={formData.isSecondHand}
+                  onChange={(e) => setFormData(prev => ({ ...prev, isSecondHand: e.target.checked }))}
+                  className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                />
+                <span className="text-sm font-medium text-gray-700">
+                  Second Hand Part (will be hidden from customers)
+                </span>
+              </label>
+              <p className="text-xs text-gray-500 mt-1 ml-6">
+                Check this box if this is a second-hand part. Second-hand parts will not be visible to customers.
+              </p>
             </div>
           </div>
 

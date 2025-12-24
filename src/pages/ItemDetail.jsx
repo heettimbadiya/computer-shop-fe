@@ -278,6 +278,17 @@ const ItemDetail = () => {
 
         {/* Price and Title Section */}
         <div className="bg-white px-4 py-4 border-b border-gray-200">
+          <div className="flex items-center gap-2 mb-2">
+            {item.isSecondHand ? (
+              <span className="badge-warning text-xs font-semibold">
+                Second Hand
+              </span>
+            ) : (
+              <span className="badge-success text-xs font-semibold">
+                New
+              </span>
+            )}
+          </div>
           <div className="flex items-baseline gap-2 mb-3">
             <span className="text-3xl font-bold text-blue-600">
               {formatPrice(item.price)}
@@ -359,6 +370,17 @@ const ItemDetail = () => {
                 </span>
                 <span className="text-sm font-semibold text-gray-900">
                   {item.category}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-2">
+                <span className="text-sm text-gray-600 flex items-center gap-2">
+                  <Package className="w-4 h-4" />
+                  Condition
+                </span>
+                <span className={`text-sm font-semibold ${
+                  item.isSecondHand === true ? 'text-amber-600' : 'text-emerald-600'
+                }`}>
+                  {item.isSecondHand === true ? 'Second Hand' : 'New'}
                 </span>
               </div>
             </div>
@@ -467,12 +489,30 @@ const ItemDetail = () => {
                   <Icon className="w-6 h-6 text-white" strokeWidth={2.5} />
                 </div>
                 <span className="badge-primary text-sm">{item.category}</span>
+                {item.isSecondHand === true ? (
+                  <span className="badge-warning text-sm font-semibold">
+                    Second Hand
+                  </span>
+                ) : (
+                  <span className="badge-success text-sm font-semibold">
+                    New
+                  </span>
+                )}
               </div>
               <h1 className="text-4xl font-bold text-gray-900 mb-4">{item.name}</h1>
-              <div className="flex items-baseline gap-3 mb-6">
+              <div className="flex items-baseline gap-3 mb-6 flex-wrap">
                 <span className="text-4xl font-bold text-primary-600">
                   ${item.price?.toLocaleString() || '0'}
                 </span>
+                {item.isSecondHand === true ? (
+                  <span className="badge-warning text-sm font-semibold">
+                    Second Hand Item
+                  </span>
+                ) : (
+                  <span className="badge-success text-sm font-semibold">
+                    Brand New
+                  </span>
+                )}
                 {item.stock !== undefined && (
                   <span className={`text-sm font-semibold px-3 py-1 rounded-full ${
                     item.stock > 10
