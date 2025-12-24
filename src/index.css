@@ -44,8 +44,8 @@
   }
   
   .card {
-    @apply bg-white rounded-2xl shadow-soft hover:shadow-medium 
-           transition-all duration-300 p-6 border border-gray-100/50
+    @apply bg-white rounded-xl sm:rounded-2xl shadow-soft hover:shadow-medium 
+           transition-all duration-300 p-4 sm:p-5 md:p-6 border border-gray-100/50
            backdrop-blur-sm;
   }
 
@@ -153,6 +153,19 @@
   /* Touch-friendly targets */
   .touch-target {
     @apply min-h-[44px] min-w-[44px];
+  }
+  
+  /* Optimize for 700-800px range (tablet portrait) */
+  @media (min-width: 700px) and (max-width: 800px) {
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    
+    /* Ensure proper spacing for cards at this width */
+    .card {
+      padding: 1rem 1.25rem;
+    }
   }
 }
 

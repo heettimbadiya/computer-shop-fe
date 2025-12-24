@@ -17,36 +17,36 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 lg:py-12 max-w-full">
         {/* Header */}
-        <div className="mb-10 animate-fade-in-up">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-600 to-accent-600 flex items-center justify-center shadow-xl shadow-primary-500/25">
-              <LayoutDashboard className="w-8 h-8 text-white" strokeWidth={2.5} />
+        <div className="mb-4 sm:mb-6 md:mb-10 animate-fade-in-up">
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4 mb-2 sm:mb-3 md:mb-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-xl sm:rounded-xl md:rounded-2xl bg-gradient-to-br from-primary-600 to-accent-600 flex items-center justify-center shadow-xl shadow-primary-500/25 flex-shrink-0">
+              <LayoutDashboard className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-white" strokeWidth={2.5} />
             </div>
-            <div>
-              <h1 className="section-title mb-1">Admin Dashboard</h1>
-              <p className="text-gray-600">Manage parts and view configuration requests</p>
+            <div className="min-w-0 flex-1">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-0.5 sm:mb-1">Admin Dashboard</h1>
+              <p className="text-xs sm:text-sm md:text-base text-gray-600">Manage parts and view configuration requests</p>
             </div>
           </div>
         </div>
 
         {/* Tab Navigation */}
-        <div className="card mb-8 p-2 flex gap-2 animate-slide-up">
+        <div className="card mb-6 sm:mb-8 p-2 sm:p-3 flex flex-col sm:flex-row gap-2 animate-slide-up overflow-x-auto">
           {tabs.map((tab) => {
             const Icon = tab.icon
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-xl font-semibold transition-all duration-300 ${
+                className={`flex-1 sm:flex-none flex items-center justify-center gap-2 sm:gap-2 md:gap-3 py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-6 rounded-xl font-semibold text-xs sm:text-sm md:text-base transition-all duration-300 min-h-[44px] sm:min-h-[48px] whitespace-nowrap ${
                   activeTab === tab.id
                     ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg shadow-primary-500/25 transform scale-[1.02]'
                     : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                 }`}
               >
-                <Icon className={`w-5 h-5 ${activeTab === tab.id ? 'text-white' : 'text-gray-600'}`} strokeWidth={2.5} />
-                <span>{tab.name}</span>
+                <Icon className={`w-4 h-4 sm:w-4 md:w-5 flex-shrink-0 ${activeTab === tab.id ? 'text-white' : 'text-gray-600'}`} strokeWidth={2.5} />
+                <span className="truncate">{tab.name}</span>
               </button>
             )
           })}

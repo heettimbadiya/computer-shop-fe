@@ -50,18 +50,18 @@ const Toast = ({ message, type = 'success', onClose, duration = 3000 }) => {
 
   return (
     <div
-      className={`min-w-[300px] max-w-md p-4 rounded-xl border-2 shadow-lg animate-slide-down ${getStyles()} ${
+      className={`w-full sm:min-w-[300px] sm:max-w-md p-3 sm:p-4 rounded-xl border-2 shadow-lg animate-slide-down ${getStyles()} ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
       } transition-all duration-300`}
     >
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-2 sm:gap-3">
         <div className="shrink-0 mt-0.5">{getIcon()}</div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm">{message}</p>
+          <p className="font-semibold text-xs sm:text-sm break-words">{message}</p>
         </div>
         <button
           onClick={handleClose}
-          className="shrink-0 p-1 rounded-lg hover:bg-black/5 transition-colors"
+          className="shrink-0 p-1.5 sm:p-1 rounded-lg hover:bg-black/5 transition-colors min-h-[32px] min-w-[32px] flex items-center justify-center"
           aria-label="Close"
         >
           <X className="w-4 h-4" />

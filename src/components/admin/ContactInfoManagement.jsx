@@ -98,27 +98,27 @@ const ContactInfoManagement = ({ showToast = () => {} }) => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="card animate-slide-up">
-        <div className="flex items-center gap-4 mb-2">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-600 to-accent-600 flex items-center justify-center shadow-lg shadow-primary-500/25">
-            <Phone className="w-6 h-6 text-white" strokeWidth={2.5} />
+        <div className="flex items-center gap-3 sm:gap-4 mb-2">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-primary-600 to-accent-600 flex items-center justify-center shadow-lg shadow-primary-500/25 flex-shrink-0">
+            <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-white" strokeWidth={2.5} />
           </div>
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">Contact Information</h2>
-            <p className="text-sm text-gray-600">Manage contact details displayed to customers</p>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Contact Information</h2>
+            <p className="text-xs sm:text-sm text-gray-600">Manage contact details displayed to customers</p>
           </div>
         </div>
       </div>
 
       {/* Contact Info Form */}
       <form onSubmit={handleSubmit} className="card animate-slide-up">
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Worker Phone Number */}
           <div>
             <label htmlFor="workerPhone" className="block text-sm font-bold text-gray-900 mb-2 flex items-center gap-2">
-              <Phone className="w-4 h-4 text-primary-600" />
+              <Phone className="w-4 h-4 text-primary-600 flex-shrink-0" />
               Worker Phone Number
             </label>
             <input
@@ -128,11 +128,11 @@ const ContactInfoManagement = ({ showToast = () => {} }) => {
               value={contactInfo.workerPhone}
               onChange={handleChange}
               placeholder="+90 551 894 00 69"
-              className={`input-field ${errors.workerPhone ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''}`}
+              className={`input-field text-sm sm:text-base min-h-[48px] ${errors.workerPhone ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''}`}
             />
             {errors.workerPhone && (
               <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
-                <AlertCircle className="w-4 h-4" />
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 {errors.workerPhone}
               </p>
             )}
@@ -144,7 +144,7 @@ const ContactInfoManagement = ({ showToast = () => {} }) => {
           {/* Instagram URL */}
           <div>
             <label htmlFor="instagramUrl" className="block text-sm font-bold text-gray-900 mb-2 flex items-center gap-2">
-              <Instagram className="w-4 h-4 text-primary-600" />
+              <Instagram className="w-4 h-4 text-primary-600 flex-shrink-0" />
               Instagram Profile URL
             </label>
             <input
@@ -154,11 +154,11 @@ const ContactInfoManagement = ({ showToast = () => {} }) => {
               value={contactInfo.instagramUrl}
               onChange={handleChange}
               placeholder="https://www.instagram.com/xpanbilgisayar"
-              className={`input-field ${errors.instagramUrl ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''}`}
+              className={`input-field text-sm sm:text-base min-h-[48px] ${errors.instagramUrl ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''}`}
             />
             {errors.instagramUrl && (
               <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
-                <AlertCircle className="w-4 h-4" />
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 {errors.instagramUrl}
               </p>
             )}
@@ -204,7 +204,7 @@ const ContactInfoManagement = ({ showToast = () => {} }) => {
             <button
               type="submit"
               disabled={saving}
-              className="btn-primary"
+              className="btn-primary w-full sm:w-auto min-h-[48px]"
             >
               {saving ? (
                 <>

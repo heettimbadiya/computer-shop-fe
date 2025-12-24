@@ -155,8 +155,8 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in overflow-y-auto">
-      <div className="card max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-scale-in shadow-2xl custom-scrollbar">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4 animate-fade-in overflow-y-auto">
+      <div className="card max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto animate-scale-in shadow-2xl custom-scrollbar my-2 sm:my-4">
         <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-200">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-600 to-accent-600 flex items-center justify-center">
@@ -177,8 +177,8 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Name <span className="text-red-500">*</span>
@@ -188,7 +188,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className={`input-field ${errors.name ? 'border-red-500' : ''}`}
+                className={`input-field text-sm sm:text-base min-h-[48px] ${errors.name ? 'border-red-500' : ''}`}
                 required
               />
               {errors.name && (
@@ -204,7 +204,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className={`input-field ${errors.category ? 'border-red-500' : ''}`}
+                className={`input-field text-sm sm:text-base min-h-[48px] ${errors.category ? 'border-red-500' : ''}`}
                 required
               >
                 {CATEGORIES.map((cat) => (
@@ -226,7 +226,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
                 onChange={handleChange}
                 min="0"
                 step="0.01"
-                className={`input-field ${errors.price ? 'border-red-500' : ''}`}
+                className={`input-field text-sm sm:text-base min-h-[48px] ${errors.price ? 'border-red-500' : ''}`}
                 required
               />
               {errors.price && (
@@ -244,7 +244,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
                 value={formData.stock}
                 onChange={handleChange}
                 min="0"
-                className={`input-field ${errors.stock ? 'border-red-500' : ''}`}
+                className={`input-field text-sm sm:text-base min-h-[48px] ${errors.stock ? 'border-red-500' : ''}`}
                 required
               />
               {errors.stock && (
@@ -276,7 +276,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
             <h3 className="font-semibold text-gray-800 mb-3">
               Compatibility Settings
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {(formData.category === 'CPU' || formData.category === 'Motherboard') && (
                 <>
                   {formData.category === 'CPU' && (
@@ -484,11 +484,11 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
             />
           </div>
 
-          <div className="flex gap-3 pt-6 border-t border-gray-200">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4 sm:pt-6 border-t border-gray-200">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 btn-secondary"
+              className="flex-1 btn-secondary min-h-[48px]"
               disabled={submitting}
             >
               <X className="w-4 h-4" />
@@ -496,7 +496,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
             </button>
             <button
               type="submit"
-              className="flex-1 btn-primary"
+              className="flex-1 btn-primary min-h-[48px]"
               disabled={submitting}
             >
               {submitting ? (

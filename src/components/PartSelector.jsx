@@ -128,16 +128,17 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
             </div>
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="btn-secondary text-sm shrink-0"
+              className="btn-secondary text-sm shrink-0 min-h-[44px]"
             >
               {isExpanded ? (
                 <>
                   <ChevronUp className="w-4 h-4" />
-                  <span>Hide</span>
+                  <span className="hidden xs:inline">Hide</span>
                 </>
               ) : (
                 <>
-                  <span>Change</span>
+                  <span className="hidden xs:inline">Change</span>
+                  <span className="xs:hidden">Change</span>
                   <ChevronDown className="w-4 h-4" />
                 </>
               )}
@@ -153,7 +154,7 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
             <p className="text-gray-600 font-medium mb-4">No {category.toLowerCase()} selected</p>
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="btn-primary"
+              className="btn-primary min-h-[48px]"
             >
               {isExpanded ? (
                 <>
@@ -184,7 +185,7 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
               {parts
                   .filter(part => {
                     if (!part || !part._id || !selectedPartId) return true
@@ -262,7 +263,7 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
                     <button
                       onClick={() => handleSelect(part._id)}
                       disabled={part.stock === 0}
-                      className={`flex-1 text-sm ${
+                      className={`flex-1 text-sm min-h-[44px] ${
                         part.stock === 0 
                           ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                           : 'btn-primary'
@@ -272,10 +273,11 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
                 </button>
                     <Link
                       to={`/items/${part._id}`}
-                      className="btn-secondary text-sm flex items-center justify-center gap-1"
+                      className="btn-secondary text-sm flex items-center justify-center gap-1 min-h-[44px] px-3 sm:px-4"
                     >
                       <ExternalLink className="w-3 h-3" />
-                      <span>Details</span>
+                      <span className="hidden xs:inline">Details</span>
+                      <span className="xs:hidden">View</span>
                     </Link>
                   </div>
                 </div>

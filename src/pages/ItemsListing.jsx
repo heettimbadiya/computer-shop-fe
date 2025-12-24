@@ -91,37 +91,37 @@ const ItemsListing = () => {
   return (
     <div className="max-w-7xl mx-auto">
       {/* Header Section */}
-      <div className="text-center mb-12 animate-fade-in-up">
-        <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-primary-600 to-accent-600 mb-6 shadow-xl shadow-primary-500/25">
-          <Package className="w-10 h-10 text-white" strokeWidth={2.5} />
+      <div className="text-center mb-8 sm:mb-12 animate-fade-in-up px-2">
+        <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-primary-600 to-accent-600 mb-4 sm:mb-6 shadow-xl shadow-primary-500/25">
+          <Package className="w-8 h-8 sm:w-10 sm:h-10 text-white" strokeWidth={2.5} />
         </div>
-        <h2 className="section-title gradient-text mb-3">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
           Computer Components
         </h2>
-        <p className="section-subtitle max-w-2xl mx-auto">
+        <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-2">
           Browse our extensive collection of high-quality computer parts. Find the perfect components for your build.
         </p>
       </div>
 
       {/* Search and Filter */}
-      <div className="card mb-8 animate-slide-up">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+      <div className="card mb-6 sm:mb-8 animate-slide-up">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+          <div className="flex-1 relative min-w-0">
+            <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
             <input
               type="text"
               placeholder="Search items by name or description..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="input-field pl-11"
+              className="input-field pl-9 sm:pl-11 text-sm sm:text-base min-h-[48px]"
             />
           </div>
-          <div className="relative">
-            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+          <div className="relative w-full sm:w-auto">
+            <Filter className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400 pointer-events-none" />
             <select
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
-              className="input-field pl-11 md:w-48 appearance-none cursor-pointer"
+              className="input-field pl-9 sm:pl-11 sm:w-48 w-full appearance-none cursor-pointer text-sm sm:text-base min-h-[48px]"
             >
               <option value="">All Categories</option>
               {CATEGORIES.map((cat) => (
@@ -148,7 +148,7 @@ const ItemsListing = () => {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {filteredItems.map((item, index) => {
             const Icon = categoryIcons[item.category] || Package
             return (

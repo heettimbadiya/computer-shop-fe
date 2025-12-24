@@ -36,8 +36,8 @@ const Footer = () => {
 
   return (
     <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white border-t border-gray-700">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
           {/* Brand Section */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
@@ -107,26 +107,28 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-8 pt-8 border-t border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-gray-400 text-sm text-center sm:text-left">
+        <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+          <p className="text-gray-400 text-xs sm:text-sm text-center sm:text-left">
             © {new Date().getFullYear()} PC Builder Pro. All rights reserved.
           </p>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <a
               href={`tel:${contactInfo.workerPhone.replace(/\s/g, '')}`}
-              className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm"
+              className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-xs sm:text-sm min-h-[44px]"
             >
               <Phone className="w-4 h-4" />
               <span className="hidden sm:inline">Call Us</span>
+              <span className="sm:hidden">Call</span>
             </a>
             <a
               href={contactInfo.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm"
+              className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-xs sm:text-sm min-h-[44px]"
             >
               <Instagram className="w-4 h-4" />
               <span className="hidden sm:inline">Follow Us</span>
+              <span className="sm:hidden">Follow</span>
             </a>
           </div>
         </div>
