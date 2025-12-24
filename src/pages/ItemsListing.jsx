@@ -44,6 +44,16 @@ const ItemsListing = () => {
 
   useEffect(() => {
     loadItems()
+    
+    // Listen for parts updates from admin panel
+    const handlePartsUpdate = () => {
+      loadItems()
+    }
+    
+    window.addEventListener('partsUpdated', handlePartsUpdate)
+    return () => {
+      window.removeEventListener('partsUpdated', handlePartsUpdate)
+    }
   }, [])
 
   const loadItems = async () => {

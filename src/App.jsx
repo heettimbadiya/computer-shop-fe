@@ -41,6 +41,22 @@ function App() {
     }
   }
 
+  // Listen for parts updates from admin panel
+  useEffect(() => {
+    const handlePartsUpdate = () => {
+      const path = window.location.pathname
+      if (path === '/' || path === '/configurator') {
+        loadParts()
+      }
+    }
+
+    window.addEventListener('partsUpdated', handlePartsUpdate)
+    return () => {
+      window.removeEventListener('partsUpdated', handlePartsUpdate)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const handleToggleAdmin = () => {
     setIsAdmin(!isAdmin)
   }
@@ -111,7 +127,8 @@ function App() {
   // App Content Component - handles conditional header display
   const AppContent = () => {
     const location = useLocation()
-    const showHeader = !location.pathname.startsWith('/items/')
+    // Show header on all pages except admin (admin has its own header)
+    const showHeader = location.pathname !== '/admin'
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50">

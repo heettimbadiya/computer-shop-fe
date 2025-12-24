@@ -55,8 +55,8 @@ const PartsManagement = () => {
   const loadParts = async () => {
     try {
       setLoading(true)
-      // Admin can see all parts including second-hand ones
-      const data = await getParts(null, null, true)
+      // Admin can see all parts (both new and second-hand)
+      const data = await getParts()
       setParts(data)
     } catch (error) {
       console.error('Error loading parts:', error)
@@ -80,6 +80,8 @@ const PartsManagement = () => {
       await deletePart(partId)
       await loadParts()
       setDeleteConfirm(null)
+      // Force refresh customer pages by triggering a storage event
+      window.dispatchEvent(new Event('partsUpdated'))
     } catch (error) {
       console.error('Error deleting part:', error)
       alert('Failed to delete part')
@@ -94,6 +96,8 @@ const PartsManagement = () => {
   const handleFormSuccess = () => {
     loadParts()
     handleFormClose()
+    // Force refresh customer pages by triggering a storage event
+    window.dispatchEvent(new Event('partsUpdated'))
   }
 
   const filteredParts = parts.filter((part) => {

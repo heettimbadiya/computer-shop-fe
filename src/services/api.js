@@ -9,12 +9,12 @@ const api = axios.create({
   },
 })
 
-export const getParts = async (category = null, compatibleWith = null, includeSecondHand = false) => {
+export const getParts = async (category = null, compatibleWith = null) => {
   try {
     const params = {}
     if (category) params.category = category
     if (compatibleWith) params.compatibleWith = JSON.stringify(compatibleWith)
-    if (includeSecondHand) params.includeSecondHand = 'true'
+    // Always include second-hand items now
     
     const response = await api.get('/parts', { params })
     return response.data.data || []
@@ -26,7 +26,12 @@ export const getParts = async (category = null, compatibleWith = null, includeSe
 
 export const getCompatibleParts = async (category, selectedParts) => {
   try {
-    const params = { category, compatibleWith: JSON.stringify(selectedParts) }
+    // Add timestamp to prevent caching
+    const params = { 
+      category, 
+      compatibleWith: JSON.stringify(selectedParts),
+      _t: Date.now() // Cache busting parameter
+    }
     const response = await api.get('/parts', { params })
     return response.data.data || []
   } catch (error) {

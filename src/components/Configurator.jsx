@@ -29,8 +29,9 @@ const Configurator = ({ parts }) => {
       const compatible = {}
       for (const category of CATEGORIES) {
         try {
+          // Always fetch fresh data from API, don't rely on cached parts
           const compatibleList = await getCompatibleParts(category, selectedParts)
-          compatible[category] = compatibleList
+          compatible[category] = compatibleList || []
         } catch (error) {
           console.error(`Error loading compatible parts for ${category}:`, error)
           compatible[category] = []
@@ -41,6 +42,25 @@ const Configurator = ({ parts }) => {
 
     loadCompatibleParts()
   }, [selectedParts])
+
+  // Initial load when component mounts
+  useEffect(() => {
+    const loadCompatibleParts = async () => {
+      const compatible = {}
+      for (const category of CATEGORIES) {
+        try {
+          const compatibleList = await getCompatibleParts(category, {})
+          compatible[category] = compatibleList || []
+        } catch (error) {
+          console.error(`Error loading compatible parts for ${category}:`, error)
+          compatible[category] = []
+        }
+      }
+      setCompatibleParts(compatible)
+    }
+
+    loadCompatibleParts()
+  }, [])
 
   const handlePartSelect = (category, partId) => {
     setSelectedParts((prev) => {

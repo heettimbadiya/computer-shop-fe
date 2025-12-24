@@ -82,6 +82,11 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
                 <span className="text-2xl font-bold text-primary-600">
                   ${selectedPart.price.toLocaleString()}
                 </span>
+                {selectedPart.stock !== undefined && selectedPart.stock === 0 && (
+                  <span className="badge-warning text-xs font-semibold">
+                    Out of Stock
+                  </span>
+                )}
               </div>
               {selectedPart.compatibility && (
                 <div className="flex flex-wrap gap-2 mb-3">
@@ -233,8 +238,9 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
                       {part.stock !== undefined && (
                         <div className="flex items-center gap-1 mt-2">
                           <Package className="w-3 h-3 text-gray-400" />
-                          <p className="text-xs text-gray-500">
-                            Stock: <span className="font-semibold">{part.stock}</span>
+                          <p className={`text-xs ${part.stock > 0 ? 'text-gray-500' : 'text-red-600 font-semibold'}`}>
+                            Stock: <span className={`font-semibold ${part.stock > 0 ? '' : 'text-red-600'}`}>{part.stock}</span>
+                            {part.stock === 0 && <span className="ml-1">(Out of Stock)</span>}
                           </p>
                         </div>
                       )}
@@ -246,9 +252,14 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
                   <div className="flex gap-2 pt-3 border-t border-gray-100">
                     <button
                       onClick={() => handleSelect(part._id)}
-                      className="flex-1 btn-primary text-sm"
+                      disabled={part.stock === 0}
+                      className={`flex-1 text-sm ${
+                        part.stock === 0 
+                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                          : 'btn-primary'
+                      }`}
                     >
-                      Select
+                      {part.stock === 0 ? 'Out of Stock' : 'Select'}
                 </button>
                     <Link
                       to={`/items/${part._id}`}
