@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { useTranslation } from './hooks/useTranslation'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Configurator from './components/Configurator'
@@ -10,6 +11,7 @@ import { getParts } from './services/api'
 import { Loader2, AlertCircle, RefreshCw } from 'lucide-react'
 
 function App() {
+  const { t } = useTranslation()
   const [isAdmin, setIsAdmin] = useState(false)
   const [parts, setParts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -93,9 +95,9 @@ function App() {
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary-100 rounded-full animate-pulse"></div>
                 </div>
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Loading Components</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">{t('common.loading')}</h3>
               <p className="text-sm sm:text-base text-gray-600 max-w-sm mx-auto">
-                Fetching the latest PC parts and compatibility data...
+                {t('common.loading')}...
               </p>
             </div>
           </div>
@@ -106,14 +108,14 @@ function App() {
                 <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-red-100 rounded-full flex items-center justify-center">
                   <AlertCircle className="w-6 h-6 sm:w-8 sm:h-8 text-red-600" strokeWidth={2} />
                 </div>
-                <h3 className="text-lg sm:text-xl font-bold text-red-900 mb-2">Connection Error</h3>
+                <h3 className="text-lg sm:text-xl font-bold text-red-900 mb-2">{t('common.error')}</h3>
                 <p className="text-sm sm:text-base text-red-700 mb-4 sm:mb-6 px-2">{localError}</p>
                 <button
                   onClick={loadParts}
                   className="btn-primary mx-auto min-h-[48px]"
                 >
                   <RefreshCw className="w-4 h-4" />
-                  <span>Retry Connection</span>
+                  <span>{t('common.refresh')}</span>
                 </button>
               </div>
             </div>

@@ -3,16 +3,19 @@ import PartsManagement from './admin/PartsManagement'
 import ConfigRequestsManagement from './admin/ConfigRequestsManagement'
 import ContactInfoManagement from './admin/ContactInfoManagement'
 import { ToastContainer, useToast } from './ToastContainer'
+import { useTranslation } from '../hooks/useTranslation'
+import LanguageSwitcher from './LanguageSwitcher'
 import { Settings, Package, FileText, LayoutDashboard, Phone } from 'lucide-react'
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('parts')
   const { showToast, removeToast, toasts } = useToast()
+  const { t } = useTranslation()
 
   const tabs = [
-    { id: 'parts', name: 'Parts Management', icon: Package },
-    { id: 'requests', name: 'Configuration Requests', icon: FileText },
-    { id: 'contact', name: 'Contact Information', icon: Phone },
+    { id: 'parts', name: t('admin.dashboard.partsManagement'), icon: Package },
+    { id: 'requests', name: t('admin.dashboard.configRequests'), icon: FileText },
+    { id: 'contact', name: t('admin.dashboard.contactInfo'), icon: Phone },
   ]
 
   return (
@@ -20,14 +23,17 @@ const AdminDashboard = () => {
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 lg:py-12 max-w-full">
         {/* Header */}
         <div className="mb-4 sm:mb-6 md:mb-10 animate-fade-in-up">
-          <div className="flex items-center gap-2 sm:gap-3 md:gap-4 mb-2 sm:mb-3 md:mb-4">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-xl sm:rounded-xl md:rounded-2xl bg-gradient-to-br from-primary-600 to-accent-600 flex items-center justify-center shadow-xl shadow-primary-500/25 flex-shrink-0">
-              <LayoutDashboard className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-white" strokeWidth={2.5} />
+          <div className="flex items-center justify-between gap-2 sm:gap-3 md:gap-4 mb-2 sm:mb-3 md:mb-4">
+            <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 min-w-0">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-xl sm:rounded-xl md:rounded-2xl bg-gradient-to-br from-primary-600 to-accent-600 flex items-center justify-center shadow-xl shadow-primary-500/25 flex-shrink-0">
+                <LayoutDashboard className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-white" strokeWidth={2.5} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-0.5 sm:mb-1">{t('admin.dashboard.title')}</h1>
+                <p className="text-xs sm:text-sm md:text-base text-gray-600">{t('admin.dashboard.subtitle')}</p>
+              </div>
             </div>
-            <div className="min-w-0 flex-1">
-              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-0.5 sm:mb-1">Admin Dashboard</h1>
-              <p className="text-xs sm:text-sm md:text-base text-gray-600">Manage parts and view configuration requests</p>
-            </div>
+            <LanguageSwitcher />
           </div>
         </div>
 

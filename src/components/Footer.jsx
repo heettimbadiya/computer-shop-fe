@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { getContactInfo } from '../services/api'
+import { useTranslation } from '../hooks/useTranslation'
 import { Phone, Instagram, Cpu } from 'lucide-react'
 
 const Footer = () => {
+  const { t } = useTranslation()
   const [contactInfo, setContactInfo] = useState({
     workerPhone: '+90 551 894 00 69',
     instagramUrl: 'https://www.instagram.com/xpanbilgisayar',
@@ -44,35 +46,35 @@ const Footer = () => {
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center shadow-lg">
                 <Cpu className="w-6 h-6 text-white" strokeWidth={2.5} />
               </div>
-              <h3 className="text-xl font-bold">PC Builder Pro</h3>
+              <h3 className="text-xl font-bold">{t('footer.brand')}</h3>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Build your dream PC with our comprehensive configurator. Quality parts, expert compatibility checking, and exceptional service.
+              {t('footer.description')}
             </p>
           </div>
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h4 className="text-lg font-bold mb-4">Quick Links</h4>
+            <h4 className="text-lg font-bold mb-4">{t('footer.quickLinks')}</h4>
             <div className="space-y-2">
               <a
                 href="/configurator"
                 className="block text-gray-400 hover:text-white transition-colors text-sm"
               >
-                PC Configurator
+                {t('footer.pcConfigurator')}
               </a>
               <a
                 href="/items"
                 className="block text-gray-400 hover:text-white transition-colors text-sm"
               >
-                Browse Items
+                {t('footer.browseItems')}
               </a>
             </div>
           </div>
 
           {/* Contact Information */}
           <div className="space-y-4">
-            <h4 className="text-lg font-bold mb-4">Contact Us</h4>
+            <h4 className="text-lg font-bold mb-4">{t('footer.contactUs')}</h4>
             <div className="space-y-3">
               <a
                 href={`tel:${contactInfo.workerPhone.replace(/\s/g, '')}`}
@@ -82,7 +84,7 @@ const Footer = () => {
                   <Phone className="w-5 h-5 text-primary-400" strokeWidth={2} />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 mb-0.5">Phone</p>
+                  <p className="text-xs text-gray-500 mb-0.5">{t('footer.phone')}</p>
                   <p className="font-semibold text-sm">{contactInfo.workerPhone}</p>
                 </div>
               </a>
@@ -96,7 +98,7 @@ const Footer = () => {
                   <Instagram className="w-5 h-5 text-pink-400" strokeWidth={2} />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 mb-0.5">Instagram</p>
+                  <p className="text-xs text-gray-500 mb-0.5">{t('footer.instagram')}</p>
                   <p className="font-semibold text-sm truncate max-w-[200px]">
                     {contactInfo.instagramUrl.replace('https://www.instagram.com/', '@')}
                   </p>
@@ -109,7 +111,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
           <p className="text-gray-400 text-xs sm:text-sm text-center sm:text-left">
-            © {new Date().getFullYear()} PC Builder Pro. All rights reserved.
+            © {new Date().getFullYear()} {t('footer.brand')}. {t('footer.copyright')}
           </p>
           <div className="flex items-center gap-3 sm:gap-4">
             <a
@@ -117,8 +119,8 @@ const Footer = () => {
               className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-xs sm:text-sm min-h-[44px]"
             >
               <Phone className="w-4 h-4" />
-              <span className="hidden sm:inline">Call Us</span>
-              <span className="sm:hidden">Call</span>
+              <span className="hidden sm:inline">{t('footer.callUs')}</span>
+              <span className="sm:hidden">{t('footer.callUs')}</span>
             </a>
             <a
               href={contactInfo.instagramUrl}
@@ -127,8 +129,8 @@ const Footer = () => {
               className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-xs sm:text-sm min-h-[44px]"
             >
               <Instagram className="w-4 h-4" />
-              <span className="hidden sm:inline">Follow Us</span>
-              <span className="sm:hidden">Follow</span>
+              <span className="hidden sm:inline">{t('footer.followUs')}</span>
+              <span className="sm:hidden">{t('footer.followUs')}</span>
             </a>
           </div>
         </div>

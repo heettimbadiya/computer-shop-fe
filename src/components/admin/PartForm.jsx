@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { createPart, updatePart } from '../../services/api'
+import { useTranslation } from '../../hooks/useTranslation'
 import { X, Save, Loader2, Package } from 'lucide-react'
 
 const CATEGORIES = [
@@ -13,6 +14,7 @@ const CATEGORIES = [
 ]
 
 const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
+  const { t } = useTranslation()
   const [formData, setFormData] = useState({
     name: '',
     category: 'CPU',
@@ -97,10 +99,10 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
 
   const validate = () => {
     const newErrors = {}
-    if (!formData.name.trim()) newErrors.name = 'Name is required'
-    if (!formData.category) newErrors.category = 'Category is required'
-    if (formData.price <= 0) newErrors.price = 'Price must be greater than 0'
-    if (formData.stock < 0) newErrors.stock = 'Stock cannot be negative'
+    if (!formData.name.trim()) newErrors.name = t('admin.parts.name') + ' ' + t('admin.parts.required').toLowerCase()
+    if (!formData.category) newErrors.category = t('admin.parts.category') + ' ' + t('admin.parts.required').toLowerCase()
+    if (formData.price <= 0) newErrors.price = t('admin.parts.price') + ' must be greater than 0'
+    if (formData.stock < 0) newErrors.stock = t('admin.parts.stock') + ' cannot be negative'
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -138,7 +140,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
       }
     } catch (error) {
       console.error('Error saving part:', error)
-      const errorMessage = error.response?.data?.message || error.response?.data?.error || 'Failed to save part. Please try again.'
+      const errorMessage = error.response?.data?.message || error.response?.data?.error || t('admin.parts.failedToSave')
       setErrors({ 
         submit: errorMessage,
         ...(error.response?.data?.errors || {})
@@ -164,9 +166,9 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
             </div>
             <div>
               <h2 className="text-2xl font-bold text-gray-900">
-                {part ? 'Edit Part' : 'Add New Part'}
+                {part ? t('admin.parts.editPart') : t('admin.parts.addNewPart')}
               </h2>
-              <p className="text-sm text-gray-600">{part ? 'Update part information' : 'Create a new part'}</p>
+              <p className="text-sm text-gray-600">{part ? t('admin.parts.updatePart') : t('admin.parts.createPart')}</p>
             </div>
           </div>
           <button
@@ -181,7 +183,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Name <span className="text-red-500">*</span>
+                {t('admin.parts.name')} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -198,7 +200,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Category <span className="text-red-500">*</span>
+                {t('admin.parts.category')} <span className="text-red-500">*</span>
               </label>
               <select
                 name="category"
@@ -217,7 +219,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Price (USD) <span className="text-red-500">*</span>
+                {t('admin.parts.price')} (USD) <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
@@ -236,7 +238,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Stock <span className="text-red-500">*</span>
+                {t('admin.parts.stock')} <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
@@ -262,11 +264,11 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
                   className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                 />
                 <span className="text-sm font-medium text-gray-700">
-                  Second Hand Part (will be hidden from customers)
+                  {t('admin.parts.isSecondHand')}
                 </span>
               </label>
               <p className="text-xs text-gray-500 mt-1 ml-6">
-                Check this box if this is a second-hand part. Second-hand parts will not be visible to customers.
+                {t('admin.parts.isSecondHandDesc')}
               </p>
             </div>
           </div>
@@ -274,7 +276,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
           {/* Compatibility Fields */}
           <div className="border-t pt-4">
             <h3 className="font-semibold text-gray-800 mb-3">
-              Compatibility Settings
+              {t('admin.parts.compatibility')}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {(formData.category === 'CPU' || formData.category === 'Motherboard') && (
@@ -282,7 +284,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
                   {formData.category === 'CPU' && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Socket Type
+                        {t('admin.parts.socketType')}
                       </label>
                       <input
                         type="text"
@@ -298,7 +300,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
                     <>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Supported Socket
+                          {t('admin.parts.supportedSocket')}
                         </label>
                         <input
                           type="text"
@@ -311,7 +313,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Supported RAM Type
+                          {t('admin.parts.supportedRamType')}
                         </label>
                         <select
                           name="compatibility.supportedRamType"
@@ -319,14 +321,14 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
                           onChange={handleChange}
                           className="input-field"
                         >
-                          <option value="">Select RAM Type</option>
+                          <option value="">{t('common.select')} RAM Type</option>
                           <option value="DDR4">DDR4</option>
                           <option value="DDR5">DDR5</option>
                         </select>
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Form Factor
+                          {t('admin.parts.formFactor')}
                         </label>
                         <select
                           name="compatibility.formFactor"
@@ -334,7 +336,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
                           onChange={handleChange}
                           className="input-field"
                         >
-                          <option value="">Select Form Factor</option>
+                          <option value="">{t('common.select')} {t('admin.parts.formFactor')}</option>
                           <option value="ATX">ATX</option>
                           <option value="mATX">mATX</option>
                           <option value="ITX">ITX</option>
@@ -349,7 +351,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
               {formData.category === 'RAM' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    DDR Version
+                    {t('admin.parts.ddrVersion')}
                   </label>
                   <select
                     name="compatibility.ddrVersion"
@@ -357,7 +359,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
                     onChange={handleChange}
                     className="input-field"
                   >
-                    <option value="">Select DDR Version</option>
+                    <option value="">{t('common.select')} {t('admin.parts.ddrVersion')}</option>
                     <option value="DDR4">DDR4</option>
                     <option value="DDR5">DDR5</option>
                   </select>
@@ -367,7 +369,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
               {formData.category === 'Cabinet' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Supported Form Factors
+                    {t('admin.parts.supportedFormFactors')}
                   </label>
                   <select
                     multiple
@@ -390,7 +392,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
               {formData.category === 'Power Supply' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Wattage
+                    {t('admin.parts.wattage')}
                   </label>
                   <input
                     type="number"
@@ -407,7 +409,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
               {(formData.category === 'CPU' || formData.category === 'GPU') && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Power Consumption (Watts)
+                    {t('admin.parts.powerConsumption')}
                   </label>
                   <input
                     type="number"
@@ -424,7 +426,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
               {formData.category === 'Storage' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Interface
+                    {t('admin.parts.interface')}
                   </label>
                   <select
                     name="compatibility.interface"
@@ -432,7 +434,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
                     onChange={handleChange}
                     className="input-field"
                   >
-                    <option value="">Select Interface</option>
+                    <option value="">{t('common.select')} {t('admin.parts.interface')}</option>
                     <option value="SATA">SATA</option>
                     <option value="NVMe">NVMe</option>
                   </select>
@@ -443,7 +445,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Image URL
+              {t('admin.parts.imageUrl')}
             </label>
             <input
               type="url"
@@ -472,7 +474,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description
+              {t('admin.parts.description')}
             </label>
             <textarea
               name="description"
@@ -492,7 +494,7 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
               disabled={submitting}
             >
               <X className="w-4 h-4" />
-              <span>Cancel</span>
+              <span>{t('common.cancel')}</span>
             </button>
             <button
               type="submit"
@@ -502,12 +504,12 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
               {submitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Saving...</span>
+                  <span>{t('common.save')}...</span>
                 </>
               ) : (
                 <>
                   <Save className="w-4 h-4" />
-                  <span>{part ? 'Update Part' : 'Create Part'}</span>
+                  <span>{part ? t('admin.parts.editPart') : t('admin.parts.createPart')}</span>
                 </>
               )}
             </button>

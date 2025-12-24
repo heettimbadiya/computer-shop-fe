@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Cpu, Settings, LayoutDashboard, ArrowLeft, Package, Sparkles, Menu, X } from 'lucide-react'
+import { useTranslation } from '../hooks/useTranslation'
+import LanguageSwitcher from './LanguageSwitcher'
 
 const Header = ({ isAdmin, onToggleAdmin }) => {
+  const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -34,15 +37,18 @@ const Header = ({ isAdmin, onToggleAdmin }) => {
             </div>
             <div className="min-w-0">
               <h1 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent truncate">
-                PC Builder Pro
+                {t('header.title')}
               </h1>
               <p className="text-xs text-gray-500 font-medium hidden xs:block">
-                {isAdmin ? 'Administration' : 'Custom Configuration'}
+                {isAdmin ? t('header.adminTitle') : t('header.customerTitle')}
               </p>
             </div>
           </Link>
           
           <div className="flex items-center gap-2 sm:gap-4">
+            {/* Language Switcher */}
+            <LanguageSwitcher />
+            
             {!isAdmin && (
               <>
                 {/* Desktop Navigation */}
@@ -56,7 +62,7 @@ const Header = ({ isAdmin, onToggleAdmin }) => {
                     }`}
                   >
                     <Sparkles className="w-4 h-4" />
-                    <span>Configurator</span>
+                    <span>{t('header.configurator')}</span>
                   </Link>
                   <Link
                     to="/items"
@@ -67,7 +73,7 @@ const Header = ({ isAdmin, onToggleAdmin }) => {
                     }`}
                   >
                     <Package className="w-4 h-4" />
-                    <span>Items</span>
+                    <span>{t('header.items')}</span>
                   </Link>
                 </nav>
                 
@@ -90,12 +96,12 @@ const Header = ({ isAdmin, onToggleAdmin }) => {
               {isAdmin ? (
                 <>
                   <LayoutDashboard className="w-4 h-4 text-primary-600" />
-                  <span className="text-sm font-semibold text-gray-700">Dashboard</span>
+                  <span className="text-sm font-semibold text-gray-700">{t('header.dashboard')}</span>
                 </>
               ) : (
                 <>
                   <Cpu className="w-4 h-4 text-primary-600" />
-                  <span className="text-sm font-semibold text-gray-700">PC Configurator</span>
+                  <span className="text-sm font-semibold text-gray-700">{t('header.configurator')}</span>
                 </>
               )}
             </div>
@@ -106,8 +112,8 @@ const Header = ({ isAdmin, onToggleAdmin }) => {
                 className="group relative overflow-hidden px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 rounded-xl font-semibold transition-all duration-300 bg-gray-100 hover:bg-gray-200 text-gray-700 border-2 border-gray-200 transform hover:scale-105 active:scale-95 flex items-center gap-2 text-xs sm:text-sm md:text-base min-h-[44px]"
               >
                 <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 transition-transform group-hover:-translate-x-1" />
-                <span className="hidden sm:inline">Customer View</span>
-                <span className="sm:hidden">View</span>
+                <span className="hidden sm:inline">{t('header.customerView')}</span>
+                <span className="sm:hidden">{t('common.view')}</span>
               </button>
             )}
           </div>
@@ -127,7 +133,7 @@ const Header = ({ isAdmin, onToggleAdmin }) => {
                 }`}
               >
                 <Sparkles className="w-4 h-4" />
-                <span>Configurator</span>
+                <span>{t('header.configurator')}</span>
               </Link>
               <Link
                 to="/items"
@@ -139,7 +145,7 @@ const Header = ({ isAdmin, onToggleAdmin }) => {
                 }`}
               >
                 <Package className="w-4 h-4" />
-                <span>Items</span>
+                <span>{t('header.items')}</span>
               </Link>
             </nav>
           </div>

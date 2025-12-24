@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { getContactInfo, updateContactInfo } from '../../services/api'
+import { useTranslation } from '../../hooks/useTranslation'
 import { Phone, Instagram, Loader2, Save, CheckCircle2, AlertCircle } from 'lucide-react'
 
 const ContactInfoManagement = ({ showToast = () => {} }) => {
+  const { t } = useTranslation()
   const [contactInfo, setContactInfo] = useState({
     workerPhone: '+90 551 894 00 69',
     instagramUrl: 'https://www.instagram.com/xpanbilgisayar',
@@ -76,10 +78,10 @@ const ContactInfoManagement = ({ showToast = () => {} }) => {
     setSaving(true)
     try {
       await updateContactInfo(contactInfo)
-      showToast('Contact information updated successfully!', 'success')
+      showToast(t('admin.contact.updated'), 'success')
     } catch (error) {
       console.error('Error updating contact info:', error)
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to update contact information'
+      const errorMessage = error.response?.data?.message || error.message || t('admin.contact.failedToUpdate')
       showToast(errorMessage, 'error', 5000)
     } finally {
       setSaving(false)
@@ -106,8 +108,8 @@ const ContactInfoManagement = ({ showToast = () => {} }) => {
             <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-white" strokeWidth={2.5} />
           </div>
           <div className="min-w-0 flex-1">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Contact Information</h2>
-            <p className="text-xs sm:text-sm text-gray-600">Manage contact details displayed to customers</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t('admin.contact.title')}</h2>
+            <p className="text-xs sm:text-sm text-gray-600">{t('admin.contact.subtitle')}</p>
           </div>
         </div>
       </div>
@@ -119,7 +121,7 @@ const ContactInfoManagement = ({ showToast = () => {} }) => {
           <div>
             <label htmlFor="workerPhone" className="block text-sm font-bold text-gray-900 mb-2 flex items-center gap-2">
               <Phone className="w-4 h-4 text-primary-600 flex-shrink-0" />
-              Worker Phone Number
+              {t('admin.contact.workerPhone')}
             </label>
             <input
               type="text"
@@ -137,7 +139,7 @@ const ContactInfoManagement = ({ showToast = () => {} }) => {
               </p>
             )}
             <p className="text-xs text-gray-500 mt-1">
-              Format: Include country code (e.g., +90 551 894 00 69)
+              {t('admin.contact.phoneFormat')}
             </p>
           </div>
 
@@ -145,7 +147,7 @@ const ContactInfoManagement = ({ showToast = () => {} }) => {
           <div>
             <label htmlFor="instagramUrl" className="block text-sm font-bold text-gray-900 mb-2 flex items-center gap-2">
               <Instagram className="w-4 h-4 text-primary-600 flex-shrink-0" />
-              Instagram Profile URL
+              {t('admin.contact.instagramUrl')}
             </label>
             <input
               type="url"
@@ -163,7 +165,7 @@ const ContactInfoManagement = ({ showToast = () => {} }) => {
               </p>
             )}
             <p className="text-xs text-gray-500 mt-1">
-              Full Instagram profile URL (e.g., https://www.instagram.com/username)
+              {t('admin.contact.instagramFormat')}
             </p>
           </div>
 
@@ -171,12 +173,12 @@ const ContactInfoManagement = ({ showToast = () => {} }) => {
           <div className="p-4 bg-gradient-to-br from-gray-50 to-primary-50/30 rounded-xl border-2 border-gray-200">
             <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-primary-600" />
-              Preview
+              {t('admin.contact.preview')}
             </h3>
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm">
                 <Phone className="w-4 h-4 text-gray-500" />
-                <span className="text-gray-600">Phone:</span>
+                <span className="text-gray-600">{t('admin.contact.phoneLabel')}:</span>
                 <a
                   href={`tel:${contactInfo.workerPhone.replace(/\s/g, '')}`}
                   className="text-primary-600 font-semibold hover:text-primary-700 hover:underline"
@@ -186,7 +188,7 @@ const ContactInfoManagement = ({ showToast = () => {} }) => {
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <Instagram className="w-4 h-4 text-gray-500" />
-                <span className="text-gray-600">Instagram:</span>
+                <span className="text-gray-600">{t('admin.contact.instagramLabel')}:</span>
                 <a
                   href={contactInfo.instagramUrl}
                   target="_blank"
@@ -209,12 +211,12 @@ const ContactInfoManagement = ({ showToast = () => {} }) => {
               {saving ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Saving...</span>
+                  <span>{t('admin.contact.saving')}</span>
                 </>
               ) : (
                 <>
                   <Save className="w-4 h-4" />
-                  <span>Save Contact Information</span>
+                  <span>{t('admin.contact.saveContactInfo')}</span>
                 </>
               )}
             </button>

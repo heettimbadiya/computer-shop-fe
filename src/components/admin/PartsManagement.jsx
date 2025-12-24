@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getParts, createPart, updatePart, deletePart } from '../../services/api'
 import PartForm from './PartForm'
+import { useTranslation } from '../../hooks/useTranslation'
 import { 
   Search, 
   Filter, 
@@ -40,6 +41,7 @@ const CATEGORIES = [
 ]
 
 const PartsManagement = ({ showToast = () => {} }) => {
+  const { t } = useTranslation()
   const [parts, setParts] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
@@ -83,11 +85,11 @@ const PartsManagement = ({ showToast = () => {} }) => {
       // Force refresh customer pages by triggering a storage event
       window.dispatchEvent(new Event('partsUpdated'))
       if (showToast) {
-        showToast('Part deleted successfully!', 'success')
+        showToast(t('admin.parts.partDeleted'), 'success')
       }
     } catch (error) {
       console.error('Error deleting part:', error)
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to delete part'
+      const errorMessage = error.response?.data?.message || error.message || t('admin.parts.failedToDelete')
       if (showToast) {
         showToast(errorMessage, 'error', 5000)
       }
@@ -106,7 +108,7 @@ const PartsManagement = ({ showToast = () => {} }) => {
     window.dispatchEvent(new Event('partsUpdated'))
     if (showToast) {
       showToast(
-        isEdit ? 'Part updated successfully!' : 'Part created successfully!',
+        isEdit ? t('admin.parts.partUpdated') : t('admin.parts.partCreated'),
         'success'
       )
     }
@@ -125,7 +127,7 @@ const PartsManagement = ({ showToast = () => {} }) => {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center animate-fade-in">
           <Loader2 className="w-16 h-16 text-primary-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-700 font-medium">Loading parts...</p>
+          <p className="text-gray-700 font-medium">{t('common.loading')}</p>
         </div>
       </div>
     )
@@ -142,7 +144,7 @@ const PartsManagement = ({ showToast = () => {} }) => {
               <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search parts by name..."
+                placeholder={t('admin.parts.searchPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="input-field pl-9 sm:pl-11 text-sm sm:text-base min-h-[48px] w-full"
@@ -156,7 +158,7 @@ const PartsManagement = ({ showToast = () => {} }) => {
                 onChange={(e) => setFilterCategory(e.target.value)}
                 className="input-field pl-9 sm:pl-11 w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px] appearance-none cursor-pointer text-sm sm:text-base min-h-[48px]"
               >
-                <option value="">All Categories</option>
+                <option value="">{t('admin.parts.allCategories')}</option>
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
@@ -170,7 +172,7 @@ const PartsManagement = ({ showToast = () => {} }) => {
             className="btn-primary whitespace-nowrap animate-scale-in min-h-[48px] text-sm sm:text-base w-full sm:w-auto mt-2 sm:mt-0"
           >
             <Plus className="w-4 h-4" />
-            <span>Add New Part</span>
+            <span>{t('admin.parts.addNewPart')}</span>
           </button>
         </div>
       </div>
@@ -215,11 +217,11 @@ const PartsManagement = ({ showToast = () => {} }) => {
                     </h3>
                     {part.isSecondHand === true ? (
                       <span className="badge-warning text-xs font-semibold flex-shrink-0">
-                        Second Hand
+                        {t('admin.parts.secondHand')}
                       </span>
                     ) : (
                       <span className="badge-success text-xs font-semibold flex-shrink-0">
-                        New
+                        {t('admin.parts.new')}
                       </span>
                     )}
                   </div>
@@ -237,13 +239,13 @@ const PartsManagement = ({ showToast = () => {} }) => {
 
             <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4">
               <div className="flex items-center justify-between p-2.5 sm:p-3 bg-gray-50 rounded-xl">
-                <span className="text-xs sm:text-sm font-medium text-gray-600">Price</span>
+                <span className="text-xs sm:text-sm font-medium text-gray-600">{t('admin.parts.price')}</span>
                 <span className="text-lg sm:text-xl md:text-2xl font-bold text-primary-600">
                   ${part.price.toLocaleString()}
                 </span>
               </div>
               <div className="flex items-center justify-between p-2.5 sm:p-3 bg-gray-50 rounded-xl">
-                <span className="text-xs sm:text-sm font-medium text-gray-600">Stock</span>
+                <span className="text-xs sm:text-sm font-medium text-gray-600">{t('admin.parts.stock')}</span>
                 <span
                   className={`font-bold text-base sm:text-lg ${
                     part.stock > 10
@@ -253,7 +255,7 @@ const PartsManagement = ({ showToast = () => {} }) => {
                       : 'text-red-600'
                   }`}
                 >
-                  {part.stock} units
+                  {part.stock} {t('admin.parts.units')}
                 </span>
               </div>
             </div>
@@ -289,16 +291,14 @@ const PartsManagement = ({ showToast = () => {} }) => {
                 className="flex-1 btn-secondary text-sm min-h-[44px]"
               >
                 <Edit className="w-4 h-4" />
-                <span className="hidden xs:inline">Edit</span>
-                <span className="xs:hidden">Edit</span>
+                <span>{t('common.edit')}</span>
               </button>
               <button
                 onClick={() => setDeleteConfirm(part._id)}
                 className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 px-3 sm:px-4 rounded-xl transition-all duration-200 text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg min-h-[44px]"
               >
                 <Trash2 className="w-4 h-4" />
-                <span className="hidden xs:inline">Delete</span>
-                <span className="xs:hidden">Del</span>
+                <span>{t('common.delete')}</span>
               </button>
             </div>
           </div>
@@ -311,11 +311,11 @@ const PartsManagement = ({ showToast = () => {} }) => {
           <div className="w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-2xl flex items-center justify-center">
             <Package className="w-10 h-10 text-gray-400" />
           </div>
-          <p className="text-gray-700 font-semibold text-lg mb-2">No parts found</p>
+          <p className="text-gray-700 font-semibold text-lg mb-2">{t('admin.parts.noPartsFound')}</p>
           <p className="text-gray-500 text-sm">
             {searchTerm || filterCategory
-              ? 'Try adjusting your search or filter criteria'
-              : 'Add your first part to get started'}
+              ? t('admin.parts.tryAdjusting')
+              : t('admin.parts.addFirstPart')}
           </p>
         </div>
       )}
@@ -330,27 +330,27 @@ const PartsManagement = ({ showToast = () => {} }) => {
               </div>
               <div>
                 <h3 className="text-xl font-bold text-gray-900">
-                  Confirm Delete
+                  {t('admin.parts.deleteConfirm')}
                 </h3>
-                <p className="text-sm text-gray-600">This action cannot be undone</p>
+                <p className="text-sm text-gray-600">{t('common.confirm')}</p>
               </div>
             </div>
             <p className="text-gray-700 mb-6">
-              Are you sure you want to delete this part? This will permanently remove it from the system.
+              {t('admin.parts.deleteMessage')}
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => setDeleteConfirm(null)}
                 className="flex-1 btn-secondary min-h-[48px]"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={() => handleDelete(deleteConfirm)}
                 className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 min-h-[48px]"
               >
                 <Trash2 className="w-4 h-4" />
-                <span>Delete</span>
+                <span>{t('common.delete')}</span>
               </button>
             </div>
           </div>

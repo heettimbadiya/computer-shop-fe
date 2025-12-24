@@ -3,9 +3,11 @@ import {
   getAllConfigRequests,
   updateConfigRequestStatus,
 } from '../../services/api'
+import { useTranslation } from '../../hooks/useTranslation'
 import { Filter, Loader2, FileText, Calendar, User, Mail, Phone, DollarSign, Eye, X, CheckCircle2, Clock, Package, RefreshCw, Settings } from 'lucide-react'
 
 const ConfigRequestsManagement = ({ showToast = () => {} }) => {
+  const { t } = useTranslation()
   const [requests, setRequests] = useState([])
   const [loading, setLoading] = useState(true)
   const [filterStatus, setFilterStatus] = useState('')
@@ -38,7 +40,7 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
       console.error('Error details:', error.response?.data || error.message)
       setRequests([])
       if (showToast) {
-        const errorMessage = error.response?.data?.message || error.message || 'Failed to load configuration requests'
+        const errorMessage = error.response?.data?.message || error.message || t('admin.requests.failedToLoad')
         showToast(errorMessage, 'error', 5000)
       }
     } finally {
@@ -68,12 +70,12 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
       await loadRequests()
       
       showToast(
-        `Status updated to ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)} successfully!`,
+        t('admin.requests.statusUpdated'),
         'success'
       )
     } catch (error) {
       console.error('Error updating status:', error)
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to update status'
+      const errorMessage = error.response?.data?.message || error.message || t('admin.requests.failedToUpdate')
       showToast(errorMessage, 'error', 5000)
       
       // Reload to revert any optimistic updates
@@ -131,7 +133,7 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center animate-fade-in">
           <Loader2 className="w-16 h-16 text-primary-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-700 font-medium">Loading requests...</p>
+          <p className="text-gray-700 font-medium">{t('common.loading')}</p>
         </div>
       </div>
     )
@@ -146,7 +148,7 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
             <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
               <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 flex-shrink-0" />
               <label className="text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">
-                Filter by Status:
+                {t('admin.requests.filterByStatus')}:
               </label>
             </div>
             <select
@@ -154,25 +156,25 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
               onChange={(e) => setFilterStatus(e.target.value)}
               className="input-field w-full sm:w-44 md:w-48 min-h-[48px] text-sm sm:text-base"
             >
-              <option value="">All Statuses</option>
-              <option value="pending">Pending</option>
-              <option value="reviewed">Reviewed</option>
-              <option value="completed">Completed</option>
+              <option value="">{t('admin.requests.allStatuses')}</option>
+              <option value="pending">{t('admin.requests.pending')}</option>
+              <option value="reviewed">{t('admin.requests.reviewed')}</option>
+              <option value="completed">{t('admin.requests.completed')}</option>
             </select>
             <button
               onClick={loadRequests}
               disabled={loading}
               className="btn-secondary text-xs sm:text-sm flex items-center justify-center gap-2 min-h-[48px] w-full sm:w-auto"
-              title="Refresh requests"
+              title={t('common.refresh')}
             >
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-              <span>Refresh</span>
+              <span>{t('common.refresh')}</span>
             </button>
           </div>
           <div className="flex items-center gap-2 px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-primary-50 to-accent-50 rounded-xl border-2 border-primary-200 shadow-sm w-full sm:w-auto sm:ml-auto">
             <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-600 flex-shrink-0" strokeWidth={2} />
             <span className="text-xs sm:text-sm font-bold text-gray-800">
-              Total: <span className="text-primary-600 font-extrabold">{requests.length}</span> requests
+              {t('admin.requests.totalRequests')}: <span className="text-primary-600 font-extrabold">{requests.length}</span> {t('admin.requests.requests')}
             </span>
           </div>
         </div>
@@ -198,7 +200,7 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
                       )} flex items-center gap-2 shadow-sm transition-all duration-200 whitespace-nowrap`}
                     >
                       <StatusIcon className="w-3 h-3 sm:w-4 sm:h-4" strokeWidth={2.5} />
-                      <span className="tracking-wide">{request.status.toUpperCase()}</span>
+                      <span className="tracking-wide">{t(`admin.requests.${request.status}`).toUpperCase()}</span>
                     </span>
                     <div className="flex items-center gap-1 text-gray-500 text-xs sm:text-sm">
                       <Calendar className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
@@ -213,7 +215,7 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
                           <User className="w-5 h-5 text-primary-600" strokeWidth={2} />
                         </div>
                         <div>
-                          <p className="text-xs font-semibold text-gray-500 mb-0.5 uppercase tracking-wide">Customer</p>
+                          <p className="text-xs font-semibold text-gray-500 mb-0.5 uppercase tracking-wide">{t('admin.requests.customer')}</p>
                           <p className="font-bold text-gray-900">
                             {request.customerName}
                           </p>
@@ -226,7 +228,7 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
                           <Mail className="w-5 h-5 text-blue-600" strokeWidth={2} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold text-gray-500 mb-0.5 uppercase tracking-wide">Email</p>
+                          <p className="text-xs font-semibold text-gray-500 mb-0.5 uppercase tracking-wide">{t('admin.requests.email')}</p>
                           <p className="font-bold text-gray-900 text-sm truncate">
                             {request.customerEmail}
                           </p>
@@ -239,7 +241,7 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
                           <Phone className="w-5 h-5 text-emerald-600" strokeWidth={2} />
                         </div>
                         <div>
-                          <p className="text-xs font-semibold text-gray-500 mb-0.5 uppercase tracking-wide">Phone</p>
+                          <p className="text-xs font-semibold text-gray-500 mb-0.5 uppercase tracking-wide">{t('admin.requests.phone')}</p>
                           <p className="font-bold text-gray-900">
                             {request.customerPhone}
                           </p>
@@ -251,7 +253,7 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
                         <DollarSign className="w-5 h-5 text-white" strokeWidth={2.5} />
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-gray-600 mb-0.5 uppercase tracking-wide">Estimated Price</p>
+                        <p className="text-xs font-semibold text-gray-600 mb-0.5 uppercase tracking-wide">{t('admin.requests.estimatedPrice')}</p>
                         <p className="text-2xl font-extrabold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
                           ${(request.estimatedPrice || 0).toLocaleString()}
                         </p>
@@ -291,7 +293,7 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
                     className="btn-secondary text-sm whitespace-nowrap hover:shadow-md transition-all duration-200 min-h-[44px] flex-1 sm:flex-none"
                   >
                     <Eye className="w-4 h-4" strokeWidth={2} />
-                    <span>View</span>
+                    <span>{t('common.view')}</span>
                   </button>
                   {request.status !== 'completed' && (
                     <select
@@ -309,15 +311,15 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
                           : 'border-gray-300'
                       }`}
                     >
-                      <option value="pending" className="bg-white">Pending</option>
-                      <option value="reviewed" className="bg-white">Reviewed</option>
-                      <option value="completed" className="bg-white">Completed</option>
+                      <option value="pending" className="bg-white">{t('admin.requests.pending')}</option>
+                      <option value="reviewed" className="bg-white">{t('admin.requests.reviewed')}</option>
+                      <option value="completed" className="bg-white">{t('admin.requests.completed')}</option>
                     </select>
                   )}
                   {request.status === 'completed' && (
                     <div className="px-3 sm:px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl text-xs sm:text-sm font-bold text-center shadow-md shadow-emerald-500/30 flex items-center justify-center gap-2 min-h-[44px] flex-1 sm:flex-none">
                       <CheckCircle2 className="w-4 h-4" strokeWidth={2.5} />
-                      <span>Completed</span>
+                      <span>{t('admin.requests.completed')}</span>
                     </div>
                   )}
                 </div>
@@ -332,11 +334,11 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
           <div className="w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-2xl flex items-center justify-center">
             <FileText className="w-10 h-10 text-gray-400" />
           </div>
-          <p className="text-gray-700 font-semibold text-lg mb-2">No configuration requests found</p>
+          <p className="text-gray-700 font-semibold text-lg mb-2">{t('admin.requests.noRequestsFound')}</p>
           <p className="text-gray-500 text-sm">
             {filterStatus
-              ? 'Try adjusting your filter criteria'
-              : 'Requests will appear here when customers submit configurations'}
+              ? t('admin.requests.tryAdjustingFilter')
+              : t('admin.requests.requestsWillAppear')}
           </p>
         </div>
       )}
@@ -355,9 +357,9 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-1 flex items-center gap-2">
                   <FileText className="w-6 h-6 text-primary-600" strokeWidth={2} />
-                  Configuration Request Details
+                  {t('admin.requests.requestDetails')}
                 </h2>
-                <p className="text-sm text-gray-600 font-medium">Complete request information</p>
+                <p className="text-sm text-gray-600 font-medium">{t('admin.requests.completeRequestInfo')}</p>
               </div>
               <button
                 onClick={() => setSelectedRequest(null)}
@@ -379,11 +381,11 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
                     const StatusIcon = getStatusIcon(selectedRequest.status)
                     return <StatusIcon className="w-4 h-4" strokeWidth={2.5} />
                   })()}
-                  <span className="tracking-wide">{selectedRequest.status.toUpperCase()}</span>
+                  <span className="tracking-wide">{t(`admin.requests.${selectedRequest.status}`).toUpperCase()}</span>
                 </span>
                 <div className="flex items-center gap-2 text-gray-600">
                   <Calendar className="w-4 h-4" />
-                  <span className="text-sm">Submitted: {formatDate(selectedRequest.createdAt)}</span>
+                  <span className="text-sm">{t('admin.requests.submitted')}: {formatDate(selectedRequest.createdAt)}</span>
                 </div>
               </div>
 
@@ -396,24 +398,24 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
                     <div className="w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center">
                       <User className="w-5 h-5 text-primary-600" strokeWidth={2} />
                     </div>
-                    Customer Information
+                    {t('admin.requests.customerInfo')}
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                     {selectedRequest.customerName && (
                       <div className="p-4 bg-white rounded-xl border border-gray-200 hover:shadow-md transition-all duration-200">
-                        <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">Name</p>
+                        <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">{t('admin.parts.name')}</p>
                         <p className="font-bold text-gray-900 text-lg">{selectedRequest.customerName}</p>
                       </div>
                     )}
                     {selectedRequest.customerEmail && (
                       <div className="p-4 bg-white rounded-xl border border-gray-200 hover:shadow-md transition-all duration-200">
-                        <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">Email</p>
+                        <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">{t('admin.requests.email')}</p>
                         <p className="font-bold text-gray-900 text-sm truncate">{selectedRequest.customerEmail}</p>
                       </div>
                     )}
                     {selectedRequest.customerPhone && (
                       <div className="p-4 bg-white rounded-xl border border-gray-200 hover:shadow-md transition-all duration-200">
-                        <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">Phone</p>
+                        <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">{t('admin.requests.phone')}</p>
                         <p className="font-bold text-gray-900 text-lg">{selectedRequest.customerPhone}</p>
                       </div>
                     )}
@@ -427,7 +429,7 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
                   <div className="w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center">
                     <Package className="w-5 h-5 text-primary-600" strokeWidth={2} />
                   </div>
-                  Selected Parts
+                  {t('admin.requests.selectedParts')}
                 </h3>
                 <div className="space-y-3">
                   {Object.entries(selectedRequest.selectedParts || {})
@@ -501,8 +503,8 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
               <div className="card bg-gradient-to-br from-primary-50 via-accent-50 to-primary-50 border-2 border-primary-300 shadow-lg">
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="text-lg font-bold text-gray-900 block mb-1">Estimated Total Price</span>
-                    <span className="text-xs text-gray-600 font-medium">Final price may vary based on availability</span>
+                    <span className="text-lg font-bold text-gray-900 block mb-1">{t('admin.requests.estimatedTotal')}</span>
+                    <span className="text-xs text-gray-600 font-medium">{t('admin.requests.finalPriceMayVary')}</span>
                   </div>
                   <div className="text-right">
                     <span className="text-4xl font-extrabold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
@@ -517,9 +519,9 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
                 <div>
                   <span className="text-sm font-bold text-gray-900 block mb-1 flex items-center gap-2">
                     <Settings className="w-4 h-4 text-primary-600" strokeWidth={2} />
-                    Update Status
+                    {t('admin.requests.updateStatus')}
                   </span>
-                  <span className="text-xs text-gray-600">Change the request status</span>
+                  <span className="text-xs text-gray-600">{t('admin.requests.changeRequestStatus')}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                   <select
@@ -538,9 +540,9 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
                         : 'border-gray-300'
                     }`}
                   >
-                    <option value="pending" className="bg-white">Pending</option>
-                    <option value="reviewed" className="bg-white">Reviewed</option>
-                    <option value="completed" className="bg-white">Completed</option>
+                    <option value="pending" className="bg-white">{t('admin.requests.pending')}</option>
+                    <option value="reviewed" className="bg-white">{t('admin.requests.reviewed')}</option>
+                    <option value="completed" className="bg-white">{t('admin.requests.completed')}</option>
                   </select>
                   {updatingStatus === selectedRequest._id && (
                     <Loader2 className="w-5 h-5 text-primary-600 animate-spin shrink-0 self-center sm:self-auto" />
