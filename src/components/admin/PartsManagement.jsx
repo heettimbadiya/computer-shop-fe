@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { getParts, createPart, updatePart, deletePart } from '../../services/api'
 import PartForm from './PartForm'
 import { useTranslation } from '../../hooks/useTranslation'
+import { formatPrice } from '../../utils/currency'
 import { 
   Search, 
   Filter, 
@@ -41,7 +42,7 @@ const CATEGORIES = [
 ]
 
 const PartsManagement = ({ showToast = () => {} }) => {
-  const { t } = useTranslation()
+  const { t, language } = useTranslation()
   const [parts, setParts] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
@@ -241,7 +242,7 @@ const PartsManagement = ({ showToast = () => {} }) => {
               <div className="flex items-center justify-between p-2.5 sm:p-3 bg-gray-50 rounded-xl">
                 <span className="text-xs sm:text-sm font-medium text-gray-600">{t('admin.parts.price')}</span>
                 <span className="text-lg sm:text-xl md:text-2xl font-bold text-primary-600">
-                  ${part.price.toLocaleString()}
+                  {formatPrice(part.price, language)}
                 </span>
               </div>
               <div className="flex items-center justify-between p-2.5 sm:p-3 bg-gray-50 rounded-xl">

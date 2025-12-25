@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from '../hooks/useTranslation'
+import { formatPrice } from '../utils/currency'
 import { 
   Cpu, 
   CircuitBoard, 
@@ -27,6 +29,7 @@ const categoryIcons = {
 }
 
 const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) => {
+  const { t, language } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
   // Find selected part with proper ID comparison
   const selectedPart = allParts?.find(p => {
@@ -62,7 +65,7 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
             className="text-sm text-red-600 hover:text-red-700 font-medium flex items-center gap-1 transition-colors"
           >
             <X className="w-4 h-4" />
-            Clear
+            {t('common.clear')}
           </button>
         )}
       </div>
@@ -76,21 +79,21 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
                 <h4 className="font-bold text-gray-900 text-lg">{selectedPart.name}</h4>
                 {selectedPart.isSecondHand === true ? (
                   <span className="badge-warning text-xs font-semibold">
-                    Second Hand
+                    {t('customer.items.secondHand')}
                   </span>
                 ) : (
                   <span className="badge-success text-xs font-semibold">
-                    New
+                    {t('customer.items.new')}
                   </span>
                 )}
               </div>
               <div className="flex items-baseline gap-2 mb-3">
                 <span className="text-2xl font-bold text-primary-600">
-                  ${selectedPart.price.toLocaleString()}
+                  {formatPrice(selectedPart.price, language)}
                 </span>
                 {selectedPart.stock !== undefined && selectedPart.stock === 0 && (
                   <span className="badge-warning text-xs font-semibold">
-                    Out of Stock
+                    {t('customer.configurator.outOfStock')}
                   </span>
                 )}
               </div>
@@ -122,7 +125,7 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
                 to={`/items/${selectedPart._id}`}
                 className="inline-flex items-center gap-1 text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors"
               >
-                <span>View Details</span>
+                <span>{t('customer.configurator.viewDetails')}</span>
                 <ExternalLink className="w-3 h-3" />
               </Link>
             </div>
@@ -133,12 +136,12 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
               {isExpanded ? (
                 <>
                   <ChevronUp className="w-4 h-4" />
-                  <span className="hidden xs:inline">Hide</span>
+                  <span className="hidden xs:inline">{t('customer.configurator.hide')}</span>
                 </>
               ) : (
                 <>
-                  <span className="hidden xs:inline">Change</span>
-                  <span className="xs:hidden">Change</span>
+                  <span className="hidden xs:inline">{t('customer.configurator.change')}</span>
+                  <span className="xs:hidden">{t('customer.configurator.change')}</span>
                   <ChevronDown className="w-4 h-4" />
                 </>
               )}
@@ -151,7 +154,7 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
             <div className="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-2xl flex items-center justify-center">
               <Icon className="w-8 h-8 text-gray-400" strokeWidth={2} />
             </div>
-            <p className="text-gray-600 font-medium mb-4">No {category.toLowerCase()} selected</p>
+            <p className="text-gray-600 font-medium mb-4">{t('customer.configurator.noPartSelected', { category: category.toLowerCase() })}</p>
             <button
               onClick={() => setIsExpanded(!isExpanded)}
               className="btn-primary min-h-[48px]"
@@ -159,11 +162,11 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
               {isExpanded ? (
                 <>
                   <ChevronUp className="w-4 h-4" />
-                  <span>Hide Options</span>
+                  <span>{t('customer.configurator.hideOptions')}</span>
                 </>
               ) : (
                 <>
-                  <span>Select {category}</span>
+                  <span>{t('customer.configurator.selectCategory', { category })}</span>
                   <ChevronDown className="w-4 h-4" />
                 </>
               )}
@@ -177,11 +180,11 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
           {parts.length === 0 ? (
             <div className="card text-center py-8 bg-gray-50">
               <Package className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-              <p className="text-gray-600 font-medium">No compatible {category.toLowerCase()} available</p>
+              <p className="text-gray-600 font-medium">{t('customer.configurator.noCompatibleParts', { category: category.toLowerCase() })}</p>
               <p className="text-sm text-gray-500 mt-2">
                 {selectedPartId
-                  ? 'Please select compatible parts first'
-                  : 'Loading compatible parts...'}
+                  ? t('customer.configurator.selectCompatibleFirst')
+                  : t('customer.configurator.loadingCompatible')}
               </p>
             </div>
           ) : (
@@ -208,17 +211,17 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
                         </h4>
                         {part.isSecondHand === true ? (
                           <span className="badge-warning text-xs font-semibold">
-                            Second Hand
+                            {t('customer.items.secondHand')}
                           </span>
                         ) : (
                           <span className="badge-success text-xs font-semibold">
-                            New
+                            {t('customer.items.new')}
                           </span>
                         )}
                       </div>
                       <div className="flex items-baseline gap-2 mb-3">
                         <span className="text-xl font-bold text-primary-600">
-                          ${part.price.toLocaleString()}
+                          {formatPrice(part.price, language)}
                         </span>
                       </div>
                       {part.compatibility && (
@@ -250,7 +253,7 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
                           <Package className="w-3 h-3 text-gray-400" />
                           <p className={`text-xs ${part.stock > 0 ? 'text-gray-500' : 'text-red-600 font-semibold'}`}>
                             Stock: <span className={`font-semibold ${part.stock > 0 ? '' : 'text-red-600'}`}>{part.stock}</span>
-                            {part.stock === 0 && <span className="ml-1">(Out of Stock)</span>}
+                            {part.stock === 0 && <span className="ml-1">({t('customer.configurator.outOfStock')})</span>}
                           </p>
                         </div>
                       )}
@@ -269,15 +272,15 @@ const PartSelector = ({ category, parts, selectedPartId, onSelect, allParts }) =
                           : 'btn-primary'
                       }`}
                     >
-                      {part.stock === 0 ? 'Out of Stock' : 'Select'}
+                      {part.stock === 0 ? t('customer.configurator.outOfStock') : t('common.select')}
                 </button>
                     <Link
                       to={`/items/${part._id}`}
                       className="btn-secondary text-sm flex items-center justify-center gap-1 min-h-[44px] px-3 sm:px-4"
                     >
                       <ExternalLink className="w-3 h-3" />
-                      <span className="hidden xs:inline">Details</span>
-                      <span className="xs:hidden">View</span>
+                      <span className="hidden xs:inline">{t('common.view')}</span>
+                      <span className="xs:hidden">{t('common.view')}</span>
                     </Link>
                   </div>
                 </div>

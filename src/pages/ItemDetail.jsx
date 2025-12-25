@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { getPartById, getContactInfo } from '../services/api'
+import { useTranslation } from '../hooks/useTranslation'
+import { formatPrice } from '../utils/currency'
 import { 
   Cpu, 
   Monitor, 
@@ -37,6 +39,7 @@ const categoryIcons = {
 }
 
 const ItemDetail = () => {
+  const { t, language } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
   const [item, setItem] = useState(null)
@@ -96,12 +99,12 @@ const ItemDetail = () => {
 
   const handleAddToConfig = () => {
     if (!item || !item._id) {
-      alert('Item information is not available. Please try again.')
+      alert(t('common.error'))
       return
     }
     
     if (item.stock === 0) {
-      alert('This item is out of stock and cannot be added to configuration.')
+      alert(t('customer.itemDetail.outOfStockMessage'))
       return
     }
     
@@ -126,7 +129,7 @@ const ItemDetail = () => {
       }).catch(() => {})
     } else {
       navigator.clipboard.writeText(window.location.href)
-      alert('Link copied to clipboard!')
+      alert(t('common.success'))
     }
   }
 
@@ -134,18 +137,10 @@ const ItemDetail = () => {
     if (contactInfo.workerPhone) {
       window.location.href = `tel:${contactInfo.workerPhone.replace(/\s/g, '')}`
     } else {
-      alert('Contact phone number is not available')
+      alert(t('common.error'))
     }
   }
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price || 0)
-  }
 
   const formatDate = (date) => {
     if (!date) return new Date().toLocaleDateString('en-US', { 
@@ -165,7 +160,7 @@ const ItemDetail = () => {
       <div className="flex items-center justify-center min-h-[70vh]">
         <div className="text-center animate-fade-in">
           <Loader2 className="w-16 h-16 text-primary-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-700 font-medium">Loading item details...</p>
+          <p className="text-gray-700 font-medium">{t('common.loading')}</p>
         </div>
       </div>
     )
@@ -179,11 +174,11 @@ const ItemDetail = () => {
             <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
               <XCircle className="w-8 h-8 text-red-600" strokeWidth={2} />
             </div>
-            <h3 className="text-xl font-bold text-red-900 mb-2">Item Not Found</h3>
-            <p className="text-red-700 mb-6">{error || 'The item you are looking for does not exist.'}</p>
+            <h3 className="text-xl font-bold text-red-900 mb-2">{t('common.error')}</h3>
+            <p className="text-red-700 mb-6">{error || t('common.error')}</p>
             <Link to="/items" className="btn-primary inline-flex">
               <ArrowLeft className="w-4 h-4" />
-              <span>Back to Items</span>
+              <span>{t('customer.itemDetail.backToItems')}</span>
             </Link>
           </div>
         </div>
@@ -199,15 +194,15 @@ const ItemDetail = () => {
   // Get specifications for mobile display
   const getSpecs = () => {
     const specs = []
-    if (item.compatibility?.socket) specs.push({ label: 'Socket', value: item.compatibility.socket })
-    if (item.compatibility?.supportedSocket) specs.push({ label: 'Socket Type', value: item.compatibility.supportedSocket })
-    if (item.compatibility?.ddrVersion) specs.push({ label: 'DDR Version', value: item.compatibility.ddrVersion })
-    if (item.compatibility?.supportedRamType) specs.push({ label: 'RAM Type', value: item.compatibility.supportedRamType })
-    if (item.compatibility?.formFactor) specs.push({ label: 'Form Factor', value: item.compatibility.formFactor })
-    if (item.compatibility?.wattage) specs.push({ label: 'Wattage', value: `${item.compatibility.wattage}W` })
-    if (item.compatibility?.powerConsumption) specs.push({ label: 'Power Consumption', value: `${item.compatibility.powerConsumption}W` })
-    if (item.compatibility?.interface) specs.push({ label: 'Interface', value: item.compatibility.interface })
-    if (item.stock !== undefined) specs.push({ label: 'Stock', value: item.stock > 0 ? `${item.stock} available` : 'Out of stock' })
+    if (item.compatibility?.socket) specs.push({ label: t('customer.itemDetail.socketType'), value: item.compatibility.socket })
+    if (item.compatibility?.supportedSocket) specs.push({ label: t('customer.itemDetail.supportedSocket'), value: item.compatibility.supportedSocket })
+    if (item.compatibility?.ddrVersion) specs.push({ label: t('customer.itemDetail.ddrVersion'), value: item.compatibility.ddrVersion })
+    if (item.compatibility?.supportedRamType) specs.push({ label: t('customer.itemDetail.supportedRamType'), value: item.compatibility.supportedRamType })
+    if (item.compatibility?.formFactor) specs.push({ label: t('customer.itemDetail.formFactor'), value: item.compatibility.formFactor })
+    if (item.compatibility?.wattage) specs.push({ label: t('customer.itemDetail.wattage'), value: `${item.compatibility.wattage}W` })
+    if (item.compatibility?.powerConsumption) specs.push({ label: t('customer.itemDetail.powerConsumption'), value: `${item.compatibility.powerConsumption}W` })
+    if (item.compatibility?.interface) specs.push({ label: t('customer.itemDetail.interface'), value: item.compatibility.interface })
+    if (item.stock !== undefined) specs.push({ label: t('customer.items.stock'), value: item.stock > 0 ? `${item.stock} ${t('customer.items.inStock')}` : t('customer.items.outOfStock') })
     return specs
   }
 
@@ -226,7 +221,7 @@ const ItemDetail = () => {
           >
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <h1 className="text-lg font-semibold flex-1 text-center">Item Details</h1>
+          <h1 className="text-lg font-semibold flex-1 text-center">{t('customer.itemDetail.itemInformation')}</h1>
           <div className="flex items-center gap-2">
             <button
               onClick={handleShare}
@@ -286,9 +281,9 @@ const ItemDetail = () => {
         {/* Breadcrumb Navigation */}
         <div className="bg-white px-4 py-3 border-b border-gray-200">
           <div className="flex items-center gap-2 text-sm text-gray-600 overflow-x-auto">
-            <span className="whitespace-nowrap">Computer</span>
+            <span className="whitespace-nowrap">{t('header.items')}</span>
             <ChevronRight className="w-4 h-4 shrink-0" />
-            <span className="whitespace-nowrap">Components</span>
+            <span className="whitespace-nowrap">{t('header.items')}</span>
             <ChevronRight className="w-4 h-4 shrink-0" />
             <span className="whitespace-nowrap">{item.category}</span>
           </div>
@@ -298,7 +293,7 @@ const ItemDetail = () => {
         <div className="bg-white px-4 py-2 border-b border-gray-200">
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <MapPin className="w-4 h-4" />
-            <span>Available for shipping</span>
+            <span>{t('customer.itemDetail.availableForShipping')}</span>
           </div>
         </div>
 
@@ -313,7 +308,7 @@ const ItemDetail = () => {
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              Item Information
+              {t('customer.itemDetail.itemInformation')}
             </button>
             <button
               onClick={() => setActiveTab('location')}
@@ -323,7 +318,7 @@ const ItemDetail = () => {
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              Location
+              {t('customer.itemDetail.location')}
             </button>
           </div>
         </div>
@@ -333,17 +328,17 @@ const ItemDetail = () => {
           <div className="flex items-center gap-2 mb-2">
             {item.isSecondHand ? (
               <span className="badge-warning text-xs font-semibold">
-                Second Hand
+                {t('customer.items.secondHand')}
               </span>
             ) : (
               <span className="badge-success text-xs font-semibold">
-                New
+                {t('customer.items.new')}
               </span>
             )}
           </div>
           <div className="flex items-baseline gap-2 mb-3">
             <span className="text-3xl font-bold text-blue-600">
-              {formatPrice(item.price)}
+              {formatPrice(item.price || 0, language)}
             </span>
             <button className="p-1 hover:bg-gray-100 rounded">
               <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -363,13 +358,13 @@ const ItemDetail = () => {
         {activeTab === 'details' && (
           <div className="bg-white px-4 py-4 border-b border-gray-200">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-gray-900">System Features:</h3>
+              <h3 className="font-semibold text-gray-900">{t('customer.itemDetail.systemFeatures')}:</h3>
               {allSpecs.length > 4 && (
                 <button
                   onClick={() => setShowMoreSpecs(!showMoreSpecs)}
                   className="text-blue-600 text-sm font-medium hover:text-blue-700"
                 >
-                  {showMoreSpecs ? 'Show Less' : 'More'}
+                  {showMoreSpecs ? t('customer.itemDetail.showLess') : t('customer.itemDetail.more')}
                 </button>
               )}
             </div>
@@ -391,7 +386,7 @@ const ItemDetail = () => {
               <div className="flex justify-between items-center py-2">
                 <span className="text-sm text-gray-600 flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
-                  Item Date
+                  {t('customer.itemDetail.itemDate')}
                 </span>
                 <span className="text-sm font-semibold text-gray-900">
                   {formatDate(item.createdAt)}
@@ -400,7 +395,7 @@ const ItemDetail = () => {
               <div className="flex justify-between items-center py-2">
                 <span className="text-sm text-gray-600 flex items-center gap-2">
                   <Hash className="w-4 h-4" />
-                  Item No
+                  {t('customer.itemDetail.itemNo')}
                 </span>
                 <span className="text-sm font-semibold text-gray-900">
                   {item._id?.slice(-8) || 'N/A'}
@@ -409,7 +404,7 @@ const ItemDetail = () => {
               <div className="flex justify-between items-center py-2">
                 <span className="text-sm text-gray-600 flex items-center gap-2">
                   <Tag className="w-4 h-4" />
-                  Brand
+                  {t('customer.itemDetail.brand')}
                 </span>
                 <span className="text-sm font-semibold text-gray-900">
                   {item.category}
@@ -418,7 +413,7 @@ const ItemDetail = () => {
               <div className="flex justify-between items-center py-2">
                 <span className="text-sm text-gray-600 flex items-center gap-2">
                   <Monitor className="w-4 h-4" />
-                  Type
+                  {t('customer.itemDetail.type')}
                 </span>
                 <span className="text-sm font-semibold text-gray-900">
                   {item.category}
@@ -427,12 +422,12 @@ const ItemDetail = () => {
               <div className="flex justify-between items-center py-2">
                 <span className="text-sm text-gray-600 flex items-center gap-2">
                   <Package className="w-4 h-4" />
-                  Condition
+                  {t('customer.itemDetail.condition')}
                 </span>
                 <span className={`text-sm font-semibold ${
                   item.isSecondHand === true ? 'text-amber-600' : 'text-emerald-600'
                 }`}>
-                  {item.isSecondHand === true ? 'Second Hand' : 'New'}
+                  {item.isSecondHand === true ? t('customer.items.secondHand') : t('customer.items.new')}
                 </span>
               </div>
             </div>
@@ -444,8 +439,8 @@ const ItemDetail = () => {
           <div className="bg-white px-4 py-6">
             <div className="text-center text-gray-600">
               <MapPin className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-              <p className="font-medium mb-1">Shipping Available</p>
-              <p className="text-sm">This item can be shipped to your location</p>
+              <p className="font-medium mb-1">{t('customer.itemDetail.availableForShipping')}</p>
+              <p className="text-sm">{t('customer.itemDetail.shippingAvailable')}</p>
             </div>
           </div>
         )}
@@ -453,7 +448,7 @@ const ItemDetail = () => {
         {/* Description Section */}
         {item.description && activeTab === 'details' && (
           <div className="bg-white px-4 py-4 border-b border-gray-200">
-            <h3 className="font-semibold text-gray-900 mb-2">Description</h3>
+            <h3 className="font-semibold text-gray-900 mb-2">{t('customer.itemDetail.description')}</h3>
             <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
               {item.description}
             </p>
@@ -464,9 +459,9 @@ const ItemDetail = () => {
         {activeTab === 'details' && (
           <div className="bg-white px-4 py-4">
             <div className="flex justify-between items-center py-2">
-              <span className="text-sm text-gray-600">Case Type</span>
+              <span className="text-sm text-gray-600">{t('customer.itemDetail.caseType')}</span>
               <span className="text-sm font-semibold text-gray-900">
-                {item.compatibility?.formFactor || 'Standard'}
+                {item.compatibility?.formFactor || t('customer.itemDetail.standard')}
               </span>
             </div>
           </div>
@@ -482,14 +477,14 @@ const ItemDetail = () => {
             disabled={item.stock === 0}
           >
             <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span>Add to Config</span>
+            <span>{t('customer.itemDetail.addToConfig')}</span>
           </button>
           <button
             onClick={handleCall}
             className="flex-1 bg-blue-600 text-white py-3 px-4 sm:px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 min-h-[48px] text-sm sm:text-base"
           >
             <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span>Contact</span>
+            <span>{t('customer.itemDetail.contact')}</span>
           </button>
         </div>
       </div>
@@ -502,7 +497,7 @@ const ItemDetail = () => {
           className="inline-flex items-center gap-2 text-gray-600 hover:text-primary-600 mb-6 transition-colors animate-fade-in"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span className="font-medium">Back to Items</span>
+          <span className="font-medium">{t('customer.itemDetail.backToItems')}</span>
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fade-in-up">
@@ -543,26 +538,26 @@ const ItemDetail = () => {
                 <span className="badge-primary text-sm">{item.category}</span>
                 {item.isSecondHand === true ? (
                   <span className="badge-warning text-sm font-semibold">
-                    Second Hand
+                    {t('customer.items.secondHand')}
                   </span>
                 ) : (
                   <span className="badge-success text-sm font-semibold">
-                    New
+                    {t('customer.items.new')}
                   </span>
                 )}
               </div>
               <h1 className="text-4xl font-bold text-gray-900 mb-4">{item.name}</h1>
               <div className="flex items-baseline gap-3 mb-6 flex-wrap">
                 <span className="text-4xl font-bold text-primary-600">
-                  ${item.price?.toLocaleString() || '0'}
+                  {formatPrice(item.price || 0, language)}
                 </span>
                 {item.isSecondHand === true ? (
                   <span className="badge-warning text-sm font-semibold">
-                    Second Hand Item
+                    {t('customer.items.secondHand')}
                   </span>
                 ) : (
                   <span className="badge-success text-sm font-semibold">
-                    Brand New
+                    {t('customer.items.new')}
                   </span>
                 )}
                 {item.stock !== undefined && (
@@ -573,7 +568,7 @@ const ItemDetail = () => {
                       ? 'bg-amber-100 text-amber-700'
                       : 'bg-red-100 text-red-700'
                   }`}>
-                    {item.stock > 0 ? `${item.stock} in stock` : 'Out of stock'}
+                    {item.stock > 0 ? `${item.stock} ${t('customer.items.inStock')}` : t('customer.items.outOfStock')}
                   </span>
                 )}
               </div>
@@ -582,7 +577,7 @@ const ItemDetail = () => {
             {/* Description */}
             {item.description && (
               <div className="card">
-                <h2 className="text-xl font-bold text-gray-900 mb-3">Description</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-3">{t('customer.itemDetail.description')}</h2>
                 <p className="text-gray-700 leading-relaxed whitespace-pre-line">
                   {item.description}
                 </p>
@@ -592,41 +587,41 @@ const ItemDetail = () => {
             {/* Specifications */}
             {item.compatibility && Object.keys(item.compatibility).length > 0 && (
               <div className="card">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Specifications</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-4">{t('customer.itemDetail.specifications')}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {item.compatibility.socket && (
                     <div className="p-4 bg-gray-50 rounded-xl">
-                      <p className="text-sm text-gray-600 mb-1">Socket Type</p>
+                      <p className="text-sm text-gray-600 mb-1">{t('customer.itemDetail.socketType')}</p>
                       <p className="font-semibold text-gray-900">{item.compatibility.socket}</p>
                     </div>
                   )}
                   {item.compatibility.supportedSocket && (
                     <div className="p-4 bg-gray-50 rounded-xl">
-                      <p className="text-sm text-gray-600 mb-1">Supported Socket</p>
+                      <p className="text-sm text-gray-600 mb-1">{t('customer.itemDetail.supportedSocket')}</p>
                       <p className="font-semibold text-gray-900">{item.compatibility.supportedSocket}</p>
                     </div>
                   )}
                   {item.compatibility.ddrVersion && (
                     <div className="p-4 bg-gray-50 rounded-xl">
-                      <p className="text-sm text-gray-600 mb-1">DDR Version</p>
+                      <p className="text-sm text-gray-600 mb-1">{t('customer.itemDetail.ddrVersion')}</p>
                       <p className="font-semibold text-gray-900">{item.compatibility.ddrVersion}</p>
                     </div>
                   )}
                   {item.compatibility.supportedRamType && (
                     <div className="p-4 bg-gray-50 rounded-xl">
-                      <p className="text-sm text-gray-600 mb-1">Supported RAM Type</p>
+                      <p className="text-sm text-gray-600 mb-1">{t('customer.itemDetail.supportedRamType')}</p>
                       <p className="font-semibold text-gray-900">{item.compatibility.supportedRamType}</p>
                     </div>
                   )}
                   {item.compatibility.formFactor && (
                     <div className="p-4 bg-gray-50 rounded-xl">
-                      <p className="text-sm text-gray-600 mb-1">Form Factor</p>
+                      <p className="text-sm text-gray-600 mb-1">{t('customer.itemDetail.formFactor')}</p>
                       <p className="font-semibold text-gray-900">{item.compatibility.formFactor}</p>
                     </div>
                   )}
                   {item.compatibility.supportedFormFactors && item.compatibility.supportedFormFactors.length > 0 && (
                     <div className="p-4 bg-gray-50 rounded-xl">
-                      <p className="text-sm text-gray-600 mb-1">Supported Form Factors</p>
+                      <p className="text-sm text-gray-600 mb-1">{t('customer.itemDetail.supportedFormFactors')}</p>
                       <p className="font-semibold text-gray-900">
                         {item.compatibility.supportedFormFactors.join(', ')}
                       </p>
@@ -634,19 +629,19 @@ const ItemDetail = () => {
                   )}
                   {item.compatibility.wattage && (
                     <div className="p-4 bg-gray-50 rounded-xl">
-                      <p className="text-sm text-gray-600 mb-1">Wattage</p>
+                      <p className="text-sm text-gray-600 mb-1">{t('customer.itemDetail.wattage')}</p>
                       <p className="font-semibold text-gray-900">{item.compatibility.wattage}W</p>
                     </div>
                   )}
                   {item.compatibility.powerConsumption && (
                     <div className="p-4 bg-gray-50 rounded-xl">
-                      <p className="text-sm text-gray-600 mb-1">Power Consumption</p>
+                      <p className="text-sm text-gray-600 mb-1">{t('customer.itemDetail.powerConsumption')}</p>
                       <p className="font-semibold text-gray-900">{item.compatibility.powerConsumption}W</p>
                     </div>
                   )}
                   {item.compatibility.interface && (
                     <div className="p-4 bg-gray-50 rounded-xl">
-                      <p className="text-sm text-gray-600 mb-1">Interface</p>
+                      <p className="text-sm text-gray-600 mb-1">{t('customer.itemDetail.interface')}</p>
                       <p className="font-semibold text-gray-900">{item.compatibility.interface}</p>
                     </div>
                   )}
@@ -662,14 +657,14 @@ const ItemDetail = () => {
                 disabled={item.stock === 0}
               >
                 <ShoppingCart className="w-4 h-4" />
-                <span>Add to Configuration</span>
+                <span>{t('customer.itemDetail.addToConfiguration')}</span>
               </button>
               <Link
                 to="/configurator"
                 className="flex-1 btn-secondary text-center"
               >
                 <Package className="w-4 h-4" />
-                <span>View Configurator</span>
+                <span>{t('customer.itemDetail.viewConfigurator')}</span>
               </Link>
             </div>
 
@@ -678,7 +673,7 @@ const ItemDetail = () => {
                 <div className="flex items-center gap-3">
                   <XCircle className="w-5 h-5 text-amber-600 shrink-0" />
                   <p className="text-amber-800 font-medium">
-                    This item is currently out of stock. Please check back later.
+                    {t('customer.itemDetail.outOfStockMessage')}
                   </p>
                 </div>
               </div>

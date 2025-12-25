@@ -1,4 +1,11 @@
 export const en = {
+  // Currency
+  currency: {
+    symbol: '$',
+    code: 'USD',
+    name: 'US Dollar',
+  },
+  
   // Common
   common: {
     loading: 'Loading...',
@@ -24,6 +31,7 @@ export const en = {
     confirm: 'Confirm',
     yes: 'Yes',
     no: 'No',
+    required: 'is required',
   },
 
   // Header
@@ -45,6 +53,7 @@ export const en = {
       partsManagement: 'Parts Management',
       configRequests: 'Configuration Requests',
       contactInfo: 'Contact Information',
+      exchangeRate: 'Exchange Rate',
     },
     parts: {
       title: 'Parts Management',
@@ -217,11 +226,44 @@ export const en = {
       caseType: 'Case Type',
       standard: 'Standard',
     },
+    itemDetail: {
+      backToItems: 'Back to Items',
+      itemInformation: 'Item Information',
+      location: 'Location',
+      systemFeatures: 'System Features',
+      more: 'More',
+      showLess: 'Show Less',
+      itemDate: 'Item Date',
+      itemNo: 'Item No',
+      brand: 'Brand',
+      type: 'Type',
+      condition: 'Condition',
+      description: 'Description',
+      specifications: 'Specifications',
+      socketType: 'Socket Type',
+      supportedSocket: 'Supported Socket',
+      ddrVersion: 'DDR Version',
+      supportedRamType: 'Supported RAM Type',
+      formFactor: 'Form Factor',
+      supportedFormFactors: 'Supported Form Factors',
+      wattage: 'Wattage',
+      powerConsumption: 'Power Consumption',
+      interface: 'Interface',
+      addToConfiguration: 'Add to Configuration',
+      addToConfig: 'Add to Config',
+      viewConfigurator: 'View Configurator',
+      contact: 'Contact',
+      outOfStockMessage: 'This item is currently out of stock. Please check back later.',
+      availableForShipping: 'Available for shipping',
+      shippingAvailable: 'This item can be shipped to your location',
+      caseType: 'Case Type',
+      standard: 'Standard',
+    },
   },
 
   // Footer
   footer: {
-    brand: 'PC Builder Pro',
+    brand: 'XPan Yazılım',
     description: 'Build your dream PC with our comprehensive configurator. Quality parts, expert compatibility checking, and exceptional service.',
     quickLinks: 'Quick Links',
     pcConfigurator: 'PC Configurator',

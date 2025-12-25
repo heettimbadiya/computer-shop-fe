@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { useTranslation } from '../hooks/useTranslation'
+import { formatPrice } from '../utils/currency'
 import { User, Mail, Phone, Send, X, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 
 const SubmitForm = ({ onSubmit, onCancel, submitting, totalPrice }) => {
+  const { t, language } = useTranslation()
   const [formData, setFormData] = useState({
     customerName: '',
     customerEmail: '',
@@ -23,17 +26,17 @@ const SubmitForm = ({ onSubmit, onCancel, submitting, totalPrice }) => {
     const newErrors = {}
     
     if (!formData.customerName.trim()) {
-      newErrors.customerName = 'Name is required'
+      newErrors.customerName = t('customer.configurator.fullName') + ' ' + t('common.required')
     }
     
     if (!formData.customerEmail.trim()) {
-      newErrors.customerEmail = 'Email is required'
+      newErrors.customerEmail = t('customer.configurator.emailAddress') + ' ' + t('common.required')
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.customerEmail)) {
-      newErrors.customerEmail = 'Invalid email format'
+      newErrors.customerEmail = t('common.error')
     }
     
     if (!formData.customerPhone.trim()) {
-      newErrors.customerPhone = 'Phone is required'
+      newErrors.customerPhone = t('customer.configurator.phoneNumber') + ' ' + t('common.required')
     }
 
     setErrors(newErrors)
@@ -54,21 +57,20 @@ const SubmitForm = ({ onSubmit, onCancel, submitting, totalPrice }) => {
           <Send className="w-5 h-5 sm:w-6 sm:h-6 text-white" strokeWidth={2.5} />
         </div>
         <div className="min-w-0">
-          <h3 className="text-xl sm:text-2xl font-bold text-gray-900">Submit Configuration</h3>
-          <p className="text-xs sm:text-sm text-gray-600">Complete your request</p>
+          <h3 className="text-xl sm:text-2xl font-bold text-gray-900">{t('customer.configurator.submitConfiguration')}</h3>
+          <p className="text-xs sm:text-sm text-gray-600">{t('customer.configurator.completeRequest')}</p>
         </div>
       </div>
       
       <p className="text-sm sm:text-base text-gray-700 mb-6 sm:mb-8 leading-relaxed">
-        Please provide your contact information to submit your custom PC configuration request. 
-        Our team will review your build and get back to you shortly.
+        {t('customer.configurator.submitDescription')}
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         <div>
           <label htmlFor="customerName" className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
             <User className="w-4 h-4 text-primary-600" />
-            Full Name <span className="text-red-500">*</span>
+            {t('customer.configurator.fullName')} <span className="text-red-500">*</span>
           </label>
           <div className="relative">
             <input
@@ -94,7 +96,7 @@ const SubmitForm = ({ onSubmit, onCancel, submitting, totalPrice }) => {
         <div>
           <label htmlFor="customerEmail" className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
             <Mail className="w-4 h-4 text-primary-600" />
-            Email Address <span className="text-red-500">*</span>
+            {t('customer.configurator.emailAddress')} <span className="text-red-500">*</span>
           </label>
           <div className="relative">
             <input
@@ -120,7 +122,7 @@ const SubmitForm = ({ onSubmit, onCancel, submitting, totalPrice }) => {
         <div>
           <label htmlFor="customerPhone" className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
             <Phone className="w-4 h-4 text-primary-600" />
-            Phone Number <span className="text-red-500">*</span>
+            {t('customer.configurator.phoneNumber')} <span className="text-red-500">*</span>
           </label>
           <div className="relative">
             <input
@@ -146,11 +148,11 @@ const SubmitForm = ({ onSubmit, onCancel, submitting, totalPrice }) => {
         <div className="bg-gradient-to-br from-primary-50 to-accent-50/50 p-4 sm:p-5 rounded-xl sm:rounded-2xl border-2 border-primary-200/50">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
-              <span className="text-xs sm:text-sm font-semibold text-gray-700 block mb-1">Estimated Total</span>
-              <span className="text-xs text-gray-600">Final price may vary</span>
+              <span className="text-xs sm:text-sm font-semibold text-gray-700 block mb-1">{t('customer.configurator.estimatedTotal')}</span>
+              <span className="text-xs text-gray-600">{t('customer.configurator.finalPriceMayVary')}</span>
             </div>
             <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent whitespace-nowrap">
-              ${totalPrice.toLocaleString()}
+              {formatPrice(totalPrice, language)}
             </span>
           </div>
         </div>
@@ -163,7 +165,7 @@ const SubmitForm = ({ onSubmit, onCancel, submitting, totalPrice }) => {
             disabled={submitting}
           >
             <X className="w-4 h-4" />
-            <span>Cancel</span>
+            <span>{t('common.cancel')}</span>
           </button>
           <button
             type="submit"
@@ -173,12 +175,12 @@ const SubmitForm = ({ onSubmit, onCancel, submitting, totalPrice }) => {
             {submitting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Submitting...</span>
+                <span>{t('customer.configurator.submitting')}</span>
               </>
             ) : (
               <>
                 <Send className="w-4 h-4" />
-                <span>Submit Request</span>
+                <span>{t('customer.configurator.submitRequestButton')}</span>
               </>
             )}
           </button>

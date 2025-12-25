@@ -151,5 +151,32 @@ export const updateContactInfo = async (contactData) => {
   }
 }
 
+// Settings API
+export const getSettings = async () => {
+  try {
+    const response = await api.get('/settings')
+    return response.data.data
+  } catch (error) {
+    console.error('Error fetching settings:', error)
+    // Return default values if API fails
+    return {
+      currency: {
+        usdToTryRate: 34.5,
+        lastUpdated: new Date(),
+      },
+    }
+  }
+}
+
+export const updateExchangeRate = async (usdToTryRate) => {
+  try {
+    const response = await api.put('/settings/exchange-rate', { usdToTryRate })
+    return response.data
+  } catch (error) {
+    console.error('Error updating exchange rate:', error)
+    throw error
+  }
+}
+
 export default api
 

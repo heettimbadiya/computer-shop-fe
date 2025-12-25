@@ -12,9 +12,25 @@ export const useLanguage = () => {
 
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState(() => {
-    // Get language from localStorage or default to English
+    // Default to Turkish - this ensures the website opens in Turkish by default
     const savedLanguage = localStorage.getItem('appLanguage')
-    return savedLanguage || 'en'
+    
+    // If no language is saved, default to Turkish
+    if (!savedLanguage) {
+      return 'tr'
+    }
+    
+    // Check if this is the first time loading with Turkish as default
+    // If user had 'en' saved before, migrate to Turkish as default
+    const hasMigrated = localStorage.getItem('languageMigratedToTurkish')
+    if (!hasMigrated && savedLanguage === 'en') {
+      // Migrate to Turkish as default, but allow user to switch back
+      localStorage.setItem('languageMigratedToTurkish', 'true')
+      return 'tr'
+    }
+    
+    // Use saved language preference
+    return savedLanguage
   })
 
   useEffect(() => {

@@ -1,4 +1,11 @@
 export const tr = {
+  // Currency
+  currency: {
+    symbol: '₺',
+    code: 'TRY',
+    name: 'Türk Lirası',
+  },
+  
   // Common
   common: {
     loading: 'Yükleniyor...',
@@ -24,6 +31,7 @@ export const tr = {
     confirm: 'Onayla',
     yes: 'Evet',
     no: 'Hayır',
+    required: 'gerekli',
   },
 
   // Header
@@ -45,6 +53,7 @@ export const tr = {
       partsManagement: 'Parça Yönetimi',
       configRequests: 'Yapılandırma İstekleri',
       contactInfo: 'İletişim Bilgileri',
+      exchangeRate: 'Döviz Kuru',
     },
     parts: {
       title: 'Parça Yönetimi',
@@ -217,11 +226,44 @@ export const tr = {
       caseType: 'Kasa Tipi',
       standard: 'Standart',
     },
+    itemDetail: {
+      backToItems: 'Ürünlere Dön',
+      itemInformation: 'Ürün Bilgileri',
+      location: 'Konum',
+      systemFeatures: 'Sistem Özellikleri',
+      more: 'Daha Fazla',
+      showLess: 'Daha Az Göster',
+      itemDate: 'Ürün Tarihi',
+      itemNo: 'Ürün No',
+      brand: 'Marka',
+      type: 'Tip',
+      condition: 'Durum',
+      description: 'Açıklama',
+      specifications: 'Özellikler',
+      socketType: 'Soket Tipi',
+      supportedSocket: 'Desteklenen Soket',
+      ddrVersion: 'DDR Versiyonu',
+      supportedRamType: 'Desteklenen RAM Tipi',
+      formFactor: 'Form Faktörü',
+      supportedFormFactors: 'Desteklenen Form Faktörleri',
+      wattage: 'Güç (Watt)',
+      powerConsumption: 'Güç Tüketimi',
+      interface: 'Arayüz',
+      addToConfiguration: 'Yapılandırmaya Ekle',
+      addToConfig: 'Yapılandırmaya Ekle',
+      viewConfigurator: 'Yapılandırıcıyı Görüntüle',
+      contact: 'İletişim',
+      outOfStockMessage: 'Bu ürün şu anda stokta bulunmamaktadır. Lütfen daha sonra tekrar kontrol edin.',
+      availableForShipping: 'Kargoya uygun',
+      shippingAvailable: 'Bu ürün konumunuza kargolanabilir',
+      caseType: 'Kasa Tipi',
+      standard: 'Standart',
+    },
   },
 
   // Footer
   footer: {
-    brand: 'PC Builder Pro',
+    brand: 'XPan Yazılım',
     description: 'Kapsamlı yapılandırıcımızla hayalinizdeki PC\'yi oluşturun. Kaliteli parçalar, uzman uyumluluk kontrolü ve olağanüstü hizmet.',
     quickLinks: 'Hızlı Bağlantılar',
     pcConfigurator: 'PC Yapılandırıcı',

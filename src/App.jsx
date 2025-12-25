@@ -53,9 +53,18 @@ function App() {
       }
     }
 
+    const handleExchangeRateUpdate = async () => {
+      const { initializeExchangeRate } = await import('./utils/currency')
+      await initializeExchangeRate()
+      // Force re-render to update prices
+      window.location.reload()
+    }
+
     window.addEventListener('partsUpdated', handlePartsUpdate)
+    window.addEventListener('exchangeRateUpdated', handleExchangeRateUpdate)
     return () => {
       window.removeEventListener('partsUpdated', handlePartsUpdate)
+      window.removeEventListener('exchangeRateUpdated', handleExchangeRateUpdate)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

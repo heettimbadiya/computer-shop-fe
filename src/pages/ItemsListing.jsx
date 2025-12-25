@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { getParts } from '../services/api'
+import { useTranslation } from '../hooks/useTranslation'
+import { formatPrice } from '../utils/currency'
 import { 
   Cpu, 
   Monitor, 
@@ -27,6 +29,7 @@ const categoryIcons = {
 }
 
 const ItemsListing = () => {
+  const { t, language } = useTranslation()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -82,7 +85,7 @@ const ItemsListing = () => {
       <div className="flex items-center justify-center min-h-[70vh]">
         <div className="text-center animate-fade-in">
           <Loader2 className="w-16 h-16 text-primary-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-700 font-medium">Loading items...</p>
+          <p className="text-gray-700 font-medium">{t('common.loading')}</p>
         </div>
       </div>
     )
@@ -96,10 +99,10 @@ const ItemsListing = () => {
           <Package className="w-8 h-8 sm:w-10 sm:h-10 text-white" strokeWidth={2.5} />
         </div>
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
-          Computer Components
+          {t('customer.items.title')}
         </h2>
         <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-2">
-          Browse our extensive collection of high-quality computer parts. Find the perfect components for your build.
+          {t('customer.items.subtitle')}
         </p>
       </div>
 
@@ -110,7 +113,7 @@ const ItemsListing = () => {
             <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
             <input
               type="text"
-              placeholder="Search items by name or description..."
+              placeholder={t('customer.items.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="input-field pl-9 sm:pl-11 text-sm sm:text-base min-h-[48px]"
@@ -123,7 +126,7 @@ const ItemsListing = () => {
               onChange={(e) => setFilterCategory(e.target.value)}
               className="input-field pl-9 sm:pl-11 sm:w-48 w-full appearance-none cursor-pointer text-sm sm:text-base min-h-[48px]"
             >
-              <option value="">All Categories</option>
+              <option value="">{t('customer.items.allCategories')}</option>
               {CATEGORIES.map((cat) => (
                 <option key={cat} value={cat}>
                   {cat}
@@ -140,11 +143,11 @@ const ItemsListing = () => {
           <div className="w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-2xl flex items-center justify-center">
             <Package className="w-10 h-10 text-gray-400" />
           </div>
-          <p className="text-gray-700 font-semibold text-lg mb-2">No items found</p>
+          <p className="text-gray-700 font-semibold text-lg mb-2">{t('customer.items.noItemsFound')}</p>
           <p className="text-gray-500 text-sm">
             {searchTerm || filterCategory
-              ? 'Try adjusting your search or filter criteria'
-              : 'No items available at the moment'}
+              ? t('customer.items.tryAdjusting')
+              : t('customer.items.noItemsAvailable')}
           </p>
         </div>
       ) : (
@@ -182,11 +185,11 @@ const ItemsListing = () => {
                     <span className="badge-primary">{item.category}</span>
                     {item.isSecondHand === true ? (
                       <span className="badge-warning text-xs font-semibold">
-                        Second Hand
+                        {t('customer.items.secondHand')}
                       </span>
                     ) : (
                       <span className="badge-success text-xs font-semibold">
-                        New
+                        {t('customer.items.new')}
                       </span>
                     )}
                   </div>
@@ -242,18 +245,18 @@ const ItemsListing = () => {
                   <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                     <div>
                       <p className="text-2xl font-bold text-primary-600">
-                        ${item.price?.toLocaleString() || '0'}
+                        {formatPrice(item.price || 0, language)}
                       </p>
                       {item.stock !== undefined && (
                         <p className="text-xs text-gray-500 mt-1">
-                          Stock: <span className={`font-semibold ${item.stock > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                            {item.stock} units
+                          {t('customer.items.stock')}: <span className={`font-semibold ${item.stock > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                            {item.stock} {t('admin.parts.units')}
                           </span>
                         </p>
                       )}
                     </div>
                     <div className="flex items-center gap-2 text-primary-600 group-hover:text-primary-700 transition-colors">
-                      <span className="text-sm font-semibold">View Details</span>
+                      <span className="text-sm font-semibold">{t('customer.items.viewDetails')}</span>
                       <ExternalLink className="w-4 h-4" />
                     </div>
                   </div>

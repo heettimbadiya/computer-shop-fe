@@ -4,10 +4,11 @@ import {
   updateConfigRequestStatus,
 } from '../../services/api'
 import { useTranslation } from '../../hooks/useTranslation'
+import { formatPrice } from '../../utils/currency'
 import { Filter, Loader2, FileText, Calendar, User, Mail, Phone, DollarSign, Eye, X, CheckCircle2, Clock, Package, RefreshCw, Settings } from 'lucide-react'
 
 const ConfigRequestsManagement = ({ showToast = () => {} }) => {
-  const { t } = useTranslation()
+  const { t, language } = useTranslation()
   const [requests, setRequests] = useState([])
   const [loading, setLoading] = useState(true)
   const [filterStatus, setFilterStatus] = useState('')
@@ -255,7 +256,7 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
                       <div>
                         <p className="text-xs font-semibold text-gray-600 mb-0.5 uppercase tracking-wide">{t('admin.requests.estimatedPrice')}</p>
                         <p className="text-2xl font-extrabold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
-                          ${(request.estimatedPrice || 0).toLocaleString()}
+                          {formatPrice(request.estimatedPrice || 0, language)}
                         </p>
                       </div>
                     </div>
@@ -489,7 +490,7 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
                             </div>
                             <div className="text-right shrink-0">
                               <p className="text-3xl font-extrabold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
-                                ${(part.price || 0).toLocaleString()}
+                                {formatPrice(part.price || 0, language)}
                               </p>
                             </div>
                           </div>
@@ -508,7 +509,7 @@ const ConfigRequestsManagement = ({ showToast = () => {} }) => {
                   </div>
                   <div className="text-right">
                     <span className="text-4xl font-extrabold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
-                      ${(selectedRequest.estimatedPrice || 0).toLocaleString()}
+                      {formatPrice(selectedRequest.estimatedPrice || 0, language)}
                     </span>
                   </div>
                 </div>

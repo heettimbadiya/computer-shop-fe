@@ -4,6 +4,7 @@ import PartSelector from './PartSelector'
 import PriceSummary from './PriceSummary'
 import SubmitForm from './SubmitForm'
 import { getCompatibleParts, submitConfigRequest } from '../services/api'
+import { useTranslation } from '../hooks/useTranslation'
 import { CheckCircle2, XCircle, Sparkles, Rocket } from 'lucide-react'
 
 const CATEGORIES = [
@@ -17,6 +18,7 @@ const CATEGORIES = [
 ]
 
 const Configurator = ({ parts }) => {
+  const { t } = useTranslation()
   const location = useLocation()
   const [selectedParts, setSelectedParts] = useState({})
   const [compatibleParts, setCompatibleParts] = useState({})
@@ -228,7 +230,7 @@ const Configurator = ({ parts }) => {
 
       setSubmitStatus({
         type: 'success',
-        message: 'Configuration request submitted successfully!',
+        message: t('customer.configurator.submittedSuccessfully'),
         data: result,
       })
       setShowSubmitForm(false)
@@ -244,7 +246,7 @@ const Configurator = ({ parts }) => {
       }, 3000)
     } catch (error) {
       console.error('Error submitting config request:', error)
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to submit configuration request'
+      const errorMessage = error.response?.data?.message || error.message || t('customer.configurator.failedToSubmit')
       const errorDetails = error.response?.data?.details || ''
       setSubmitStatus({
         type: 'error',
@@ -268,17 +270,17 @@ const Configurator = ({ parts }) => {
           <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-white" strokeWidth={2.5} />
         </div>
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
-          Build Your Custom PC
+          {t('customer.configurator.title')}
         </h2>
         <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-2">
-          Select compatible parts to configure your dream computer. Our intelligent system ensures all components work together perfectly.
+          {t('customer.configurator.subtitle')}
         </p>
         
         {/* Progress Indicator */}
         <div className="mt-6 sm:mt-8 max-w-md mx-auto px-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs sm:text-sm font-semibold text-gray-700">
-              Configuration Progress
+              {t('customer.configurator.progress')}
             </span>
             <span className="text-xs sm:text-sm font-bold text-primary-600">
               {selectedCount} / {CATEGORIES.length}
@@ -354,10 +356,10 @@ const Configurator = ({ parts }) => {
                   </div>
                   <div className="min-w-0">
                     <h3 className="font-bold text-gray-900 text-base sm:text-lg mb-1">
-                      Configuration Complete! 🎉
+                      {t('customer.configurator.configurationComplete')}
                     </h3>
                     <p className="text-xs sm:text-sm text-gray-700">
-                      All parts have been selected. Review your build and submit your request.
+                      {t('customer.configurator.allPartsSelected')}
                     </p>
                   </div>
                 </div>
@@ -366,7 +368,7 @@ const Configurator = ({ parts }) => {
                   className="btn-primary whitespace-nowrap w-full sm:w-auto min-h-[48px] text-sm sm:text-base"
                 >
                   <Rocket className="w-4 h-4" />
-                  <span>Submit Request</span>
+                  <span>{t('customer.configurator.submitRequest')}</span>
                 </button>
               </div>
             </div>

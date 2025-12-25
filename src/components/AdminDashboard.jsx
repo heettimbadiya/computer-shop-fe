@@ -2,10 +2,11 @@ import { useState } from 'react'
 import PartsManagement from './admin/PartsManagement'
 import ConfigRequestsManagement from './admin/ConfigRequestsManagement'
 import ContactInfoManagement from './admin/ContactInfoManagement'
+import ExchangeRateManagement from './admin/ExchangeRateManagement'
 import { ToastContainer, useToast } from './ToastContainer'
 import { useTranslation } from '../hooks/useTranslation'
 import LanguageSwitcher from './LanguageSwitcher'
-import { Settings, Package, FileText, LayoutDashboard, Phone } from 'lucide-react'
+import { Settings, Package, FileText, LayoutDashboard, Phone, DollarSign } from 'lucide-react'
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('parts')
@@ -16,6 +17,7 @@ const AdminDashboard = () => {
     { id: 'parts', name: t('admin.dashboard.partsManagement'), icon: Package },
     { id: 'requests', name: t('admin.dashboard.configRequests'), icon: FileText },
     { id: 'contact', name: t('admin.dashboard.contactInfo'), icon: Phone },
+    { id: 'exchange', name: t('admin.dashboard.exchangeRate'), icon: DollarSign },
   ]
 
   return (
@@ -63,6 +65,7 @@ const AdminDashboard = () => {
           {activeTab === 'parts' && <PartsManagement showToast={showToast} />}
           {activeTab === 'requests' && <ConfigRequestsManagement showToast={showToast} />}
           {activeTab === 'contact' && <ContactInfoManagement showToast={showToast} />}
+          {activeTab === 'exchange' && <ExchangeRateManagement showToast={showToast} />}
         </div>
       </div>
       <ToastContainer toasts={toasts} removeToast={removeToast} />
