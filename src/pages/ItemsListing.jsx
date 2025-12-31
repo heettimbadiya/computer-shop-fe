@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { getParts } from '../services/api'
+import { getParts, getCategories } from '../services/api'
 import { useTranslation } from '../hooks/useTranslation'
 import { formatPrice } from '../utils/currency'
 import { 
@@ -31,33 +31,43 @@ const categoryIcons = {
 const ItemsListing = () => {
   const { t, language } = useTranslation()
   const [items, setItems] = useState([])
+  const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterCategory, setFilterCategory] = useState('')
 
-  const CATEGORIES = [
-    'CPU',
-    'Motherboard',
-    'RAM',
-    'Storage',
-    'GPU',
-    'Power Supply',
-    'Cabinet',
-  ]
-
   useEffect(() => {
     loadItems()
+    loadCategories()
     
     // Listen for parts updates from admin panel
     const handlePartsUpdate = () => {
       loadItems()
     }
     
+    // Listen for category updates
+    const handleCategoriesUpdate = () => {
+      loadCategories()
+    }
+    
     window.addEventListener('partsUpdated', handlePartsUpdate)
+    window.addEventListener('categoriesUpdated', handleCategoriesUpdate)
     return () => {
       window.removeEventListener('partsUpdated', handlePartsUpdate)
+      window.removeEventListener('categoriesUpdated', handleCategoriesUpdate)
     }
   }, [])
+
+  const loadCategories = async () => {
+    try {
+      const data = await getCategories()
+      setCategories(data.map(cat => cat.name))
+    } catch (error) {
+      console.error('Error loading categories:', error)
+      // Fallback to default categories if API fails
+      setCategories(['CPU', 'Motherboard', 'RAM', 'Storage', 'GPU', 'Power Supply', 'Cabinet'])
+    }
+  }
 
   const loadItems = async () => {
     try {
@@ -127,7 +137,7 @@ const ItemsListing = () => {
               className="input-field pl-9 sm:pl-11 sm:w-48 w-full appearance-none cursor-pointer text-sm sm:text-base min-h-[48px]"
             >
               <option value="">{t('customer.items.allCategories')}</option>
-              {CATEGORIES.map((cat) => (
+              {categories.map((cat) => (
                 <option key={cat} value={cat}>
                   {cat}
                 </option>

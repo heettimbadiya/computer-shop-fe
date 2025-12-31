@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getParts, createPart, updatePart, deletePart } from '../../services/api'
+import { getParts, createPart, updatePart, deletePart, getCategories } from '../../services/api'
 import PartForm from './PartForm'
 import { useTranslation } from '../../hooks/useTranslation'
 import { formatPrice } from '../../utils/currency'
@@ -31,19 +31,10 @@ const categoryIcons = {
   'Cabinet': Box,
 }
 
-const CATEGORIES = [
-  'CPU',
-  'Motherboard',
-  'RAM',
-  'Storage',
-  'GPU',
-  'Power Supply',
-  'Cabinet',
-]
-
 const PartsManagement = ({ showToast = () => {} }) => {
   const { t, language } = useTranslation()
   const [parts, setParts] = useState([])
+  const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editingPart, setEditingPart] = useState(null)
@@ -53,7 +44,28 @@ const PartsManagement = ({ showToast = () => {} }) => {
 
   useEffect(() => {
     loadParts()
+    loadCategories()
+    
+    // Listen for category updates
+    const handleCategoriesUpdate = () => {
+      loadCategories()
+    }
+    window.addEventListener('categoriesUpdated', handleCategoriesUpdate)
+    return () => {
+      window.removeEventListener('categoriesUpdated', handleCategoriesUpdate)
+    }
   }, [])
+
+  const loadCategories = async () => {
+    try {
+      const data = await getCategories()
+      setCategories(data.map(cat => cat.name))
+    } catch (error) {
+      console.error('Error loading categories:', error)
+      // Fallback to default categories if API fails
+      setCategories(['CPU', 'Motherboard', 'RAM', 'Storage', 'GPU', 'Power Supply', 'Cabinet'])
+    }
+  }
 
   const loadParts = async () => {
     try {
@@ -160,7 +172,7 @@ const PartsManagement = ({ showToast = () => {} }) => {
                 className="input-field pl-9 sm:pl-11 w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px] appearance-none cursor-pointer text-sm sm:text-base min-h-[48px]"
               >
                 <option value="">{t('admin.parts.allCategories')}</option>
-                {CATEGORIES.map((cat) => (
+                {categories.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
                   </option>

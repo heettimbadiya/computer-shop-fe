@@ -3,10 +3,11 @@ import PartsManagement from './admin/PartsManagement'
 import ConfigRequestsManagement from './admin/ConfigRequestsManagement'
 import ContactInfoManagement from './admin/ContactInfoManagement'
 import ExchangeRateManagement from './admin/ExchangeRateManagement'
+import CategoryManagement from './admin/CategoryManagement'
 import { ToastContainer, useToast } from './ToastContainer'
 import { useTranslation } from '../hooks/useTranslation'
 import LanguageSwitcher from './LanguageSwitcher'
-import { Settings, Package, FileText, LayoutDashboard, Phone, DollarSign } from 'lucide-react'
+import { Settings, Package, FileText, LayoutDashboard, Phone, DollarSign, Tag } from 'lucide-react'
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('parts')
@@ -15,6 +16,7 @@ const AdminDashboard = () => {
 
   const tabs = [
     { id: 'parts', name: t('admin.dashboard.partsManagement'), icon: Package },
+    { id: 'categories', name: t('admin.dashboard.categories'), icon: Tag },
     { id: 'requests', name: t('admin.dashboard.configRequests'), icon: FileText },
     { id: 'contact', name: t('admin.dashboard.contactInfo'), icon: Phone },
     { id: 'exchange', name: t('admin.dashboard.exchangeRate'), icon: DollarSign },
@@ -40,20 +42,20 @@ const AdminDashboard = () => {
         </div>
 
         {/* Tab Navigation */}
-        <div className="card mb-6 sm:mb-8 p-2 sm:p-3 flex flex-col sm:flex-row gap-2 animate-slide-up overflow-x-auto">
+        <div className="card mb-6 sm:mb-8 p-2 sm:p-3 flex flex-col sm:flex-row gap-2 animate-slide-up overflow-x-auto bg-gradient-to-br from-white to-gray-50/50 border-2 border-gray-100/50 shadow-md">
           {tabs.map((tab) => {
             const Icon = tab.icon
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 sm:flex-none flex items-center justify-center gap-2 sm:gap-2 md:gap-3 py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-6 rounded-xl font-semibold text-xs sm:text-sm md:text-base transition-all duration-300 min-h-[44px] sm:min-h-[48px] whitespace-nowrap ${
+                className={`flex-1 sm:flex-none flex items-center justify-center gap-2 sm:gap-2 md:gap-3 py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-6 rounded-xl font-semibold text-xs sm:text-sm md:text-base transition-all duration-300 min-h-[44px] sm:min-h-[48px] whitespace-nowrap relative ${
                   activeTab === tab.id
-                    ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg shadow-primary-500/25 transform scale-[1.02]'
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg shadow-primary-500/30 transform scale-[1.02]'
+                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 active:scale-[0.98]'
                 }`}
               >
-                <Icon className={`w-4 h-4 sm:w-4 md:w-5 flex-shrink-0 ${activeTab === tab.id ? 'text-white' : 'text-gray-600'}`} strokeWidth={2.5} />
+                <Icon className={`w-4 h-4 sm:w-4 md:w-5 flex-shrink-0 transition-colors duration-300 ${activeTab === tab.id ? 'text-white' : 'text-gray-600'}`} strokeWidth={2.5} />
                 <span className="truncate">{tab.name}</span>
               </button>
             )
@@ -63,6 +65,7 @@ const AdminDashboard = () => {
         {/* Tab Content */}
         <div className="animate-fade-in">
           {activeTab === 'parts' && <PartsManagement showToast={showToast} />}
+          {activeTab === 'categories' && <CategoryManagement showToast={showToast} />}
           {activeTab === 'requests' && <ConfigRequestsManagement showToast={showToast} />}
           {activeTab === 'contact' && <ContactInfoManagement showToast={showToast} />}
           {activeTab === 'exchange' && <ExchangeRateManagement showToast={showToast} />}

@@ -178,5 +178,46 @@ export const updateExchangeRate = async (usdToTryRate) => {
   }
 }
 
+// Categories API
+export const getCategories = async () => {
+  try {
+    const response = await api.get('/categories')
+    return response.data.data || []
+  } catch (error) {
+    console.error('Error fetching categories:', error)
+    throw error
+  }
+}
+
+export const createCategory = async (categoryData) => {
+  try {
+    const response = await api.post('/categories', categoryData)
+    return response.data
+  } catch (error) {
+    console.error('Error creating category:', error)
+    throw error
+  }
+}
+
+export const updateCategory = async (categoryId, categoryData) => {
+  try {
+    const response = await api.put(`/categories/${categoryId}`, categoryData)
+    return response.data
+  } catch (error) {
+    console.error('Error updating category:', error)
+    throw error
+  }
+}
+
+export const deleteCategory = async (categoryId) => {
+  try {
+    const response = await api.delete(`/categories/${categoryId}`)
+    return response.data
+  } catch (error) {
+    console.error('Error deleting category:', error)
+    throw error
+  }
+}
+
 export default api
 

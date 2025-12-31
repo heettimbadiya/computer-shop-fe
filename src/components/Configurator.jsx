@@ -3,23 +3,14 @@ import { useLocation } from 'react-router-dom'
 import PartSelector from './PartSelector'
 import PriceSummary from './PriceSummary'
 import SubmitForm from './SubmitForm'
-import { getCompatibleParts, submitConfigRequest } from '../services/api'
+import { getCompatibleParts, submitConfigRequest, getCategories } from '../services/api'
 import { useTranslation } from '../hooks/useTranslation'
 import { CheckCircle2, XCircle, Sparkles, Rocket } from 'lucide-react'
-
-const CATEGORIES = [
-  'CPU',
-  'Motherboard',
-  'RAM',
-  'Storage',
-  'GPU',
-  'Power Supply',
-  'Cabinet',
-]
 
 const Configurator = ({ parts }) => {
   const { t } = useTranslation()
   const location = useLocation()
+  const [categories, setCategories] = useState([])
   const [selectedParts, setSelectedParts] = useState({})
   const [compatibleParts, setCompatibleParts] = useState({})
   const [currentStep, setCurrentStep] = useState(0)
@@ -27,6 +18,31 @@ const Configurator = ({ parts }) => {
   const [submitting, setSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState(null)
   const processedItemRef = useRef(null)
+
+  // Load categories
+  useEffect(() => {
+    loadCategories()
+    
+    // Listen for category updates
+    const handleCategoriesUpdate = () => {
+      loadCategories()
+    }
+    window.addEventListener('categoriesUpdated', handleCategoriesUpdate)
+    return () => {
+      window.removeEventListener('categoriesUpdated', handleCategoriesUpdate)
+    }
+  }, [])
+
+  const loadCategories = async () => {
+    try {
+      const data = await getCategories()
+      setCategories(data.map(cat => cat.name))
+    } catch (error) {
+      console.error('Error loading categories:', error)
+      // Fallback to default categories if API fails
+      setCategories(['CPU', 'Motherboard', 'RAM', 'Storage', 'GPU', 'Power Supply', 'Cabinet'])
+    }
+  }
 
   // Handle item added from detail page
   useEffect(() => {
@@ -41,7 +57,7 @@ const Configurator = ({ parts }) => {
     if (processedItemRef.current === itemKey) return
     
     // Only proceed if category is valid and ID exists
-    if (!CATEGORIES.includes(category) || !selectedId) {
+    if (!categories.includes(category) || !selectedId) {
       window.history.replaceState({}, document.title)
       return
     }
@@ -99,15 +115,15 @@ const Configurator = ({ parts }) => {
       const timer = setTimeout(checkAndSelect, 1500)
       return () => clearTimeout(timer)
     }
-  }, [location.state, parts, compatibleParts])
+  }, [location.state, parts, compatibleParts, categories])
 
   // Load compatible parts for each category
   useEffect(() => {
-    if (!parts || parts.length === 0) return
+    if (!parts || parts.length === 0 || categories.length === 0) return
     
     const loadCompatibleParts = async () => {
       const compatible = {}
-      for (const category of CATEGORIES) {
+      for (const category of categories) {
         try {
           // Always fetch fresh data from API, don't rely on cached parts
           const compatibleList = await getCompatibleParts(category, selectedParts)
@@ -121,7 +137,7 @@ const Configurator = ({ parts }) => {
     }
 
     loadCompatibleParts()
-  }, [selectedParts, parts])
+  }, [selectedParts, parts, categories])
 
   const handlePartSelect = (category, partId) => {
     if (!parts) return
@@ -259,7 +275,7 @@ const Configurator = ({ parts }) => {
     }
   }
 
-  const allPartsSelected = CATEGORIES.every(cat => selectedParts[cat])
+  const allPartsSelected = categories.length > 0 && categories.every(cat => selectedParts[cat])
   const selectedCount = Object.values(selectedParts).filter(Boolean).length
 
   return (
@@ -283,13 +299,13 @@ const Configurator = ({ parts }) => {
               {t('customer.configurator.progress')}
             </span>
             <span className="text-xs sm:text-sm font-bold text-primary-600">
-              {selectedCount} / {CATEGORIES.length}
+              {selectedCount} / {categories.length}
             </span>
           </div>
           <div className="w-full h-2.5 sm:h-3 bg-gray-200 rounded-full overflow-hidden">
             <div 
               className="h-full bg-gradient-to-r from-primary-600 to-accent-600 transition-all duration-500 ease-out rounded-full"
-              style={{ width: `${(selectedCount / CATEGORIES.length) * 100}%` }}
+              style={{ width: `${categories.length > 0 ? (selectedCount / categories.length) * 100 : 0}%` }}
             />
           </div>
         </div>
@@ -330,7 +346,7 @@ const Configurator = ({ parts }) => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
         {/* Configuration Panel */}
         <div className="lg:col-span-2 space-y-4 sm:space-y-6">
-          {CATEGORIES.map((category, index) => (
+          {categories.map((category, index) => (
             <div
               key={category}
               id={`category-${category}`}

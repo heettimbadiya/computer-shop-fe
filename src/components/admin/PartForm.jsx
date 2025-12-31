@@ -1,23 +1,15 @@
 import { useState, useEffect } from 'react'
-import { createPart, updatePart } from '../../services/api'
+import { createPart, updatePart, getCategories } from '../../services/api'
 import { useTranslation } from '../../hooks/useTranslation'
 import { X, Save, Loader2, Package } from 'lucide-react'
 
-const CATEGORIES = [
-  'CPU',
-  'Motherboard',
-  'RAM',
-  'Storage',
-  'GPU',
-  'Power Supply',
-  'Cabinet',
-]
-
 const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
   const { t } = useTranslation()
+  const [categories, setCategories] = useState([])
+  const [loadingCategories, setLoadingCategories] = useState(true)
   const [formData, setFormData] = useState({
     name: '',
-    category: 'CPU',
+    category: '',
     price: 0,
     stock: 0,
     isSecondHand: false,
@@ -39,10 +31,42 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
+    loadCategories()
+    
+    // Listen for category updates
+    const handleCategoriesUpdate = () => {
+      loadCategories()
+    }
+    window.addEventListener('categoriesUpdated', handleCategoriesUpdate)
+    return () => {
+      window.removeEventListener('categoriesUpdated', handleCategoriesUpdate)
+    }
+  }, [])
+
+  const loadCategories = async () => {
+    try {
+      setLoadingCategories(true)
+      const data = await getCategories()
+      setCategories(data.map(cat => cat.name))
+      
+      // Set default category if formData.category is empty
+      if (!formData.category && data.length > 0) {
+        setFormData(prev => ({ ...prev, category: data[0].name }))
+      }
+    } catch (error) {
+      console.error('Error loading categories:', error)
+      // Fallback to default categories if API fails
+      setCategories(['CPU', 'Motherboard', 'RAM', 'Storage', 'GPU', 'Power Supply', 'Cabinet'])
+    } finally {
+      setLoadingCategories(false)
+    }
+  }
+
+  useEffect(() => {
     if (part) {
       setFormData({
         name: part.name || '',
-        category: part.category || 'CPU',
+        category: part.category || (categories.length > 0 ? categories[0] : ''),
         price: part.price || 0,
         stock: part.stock || 0,
         isSecondHand: part.isSecondHand || false,
@@ -60,8 +84,11 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
         imageUrl: part.imageUrl || '',
         description: part.description || '',
       })
+    } else if (categories.length > 0 && !formData.category) {
+      // Set default category if no part is being edited
+      setFormData(prev => ({ ...prev, category: prev.category || categories[0] }))
     }
-  }, [part])
+  }, [part, categories])
 
   const handleChange = (e) => {
     const { name, value, type } = e.target
@@ -208,12 +235,17 @@ const PartForm = ({ part, onClose, onSuccess, showToast = () => {} }) => {
                 onChange={handleChange}
                 className={`input-field text-sm sm:text-base min-h-[48px] ${errors.category ? 'border-red-500' : ''}`}
                 required
+                disabled={loadingCategories}
               >
-                {CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
+                {loadingCategories ? (
+                  <option>Loading categories...</option>
+                ) : (
+                  categories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))
+                )}
               </select>
             </div>
 
